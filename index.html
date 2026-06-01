@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Viltis provides specialized life sciences consulting and expert resourcing for pharmaceutical, biotech, medical device, and diagnostics companies.">
+  <title>Viltis | Life Sciences Consulting & Expert Resourcing</title>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <a href="#hero" class="skip-link">Skip to main content</a>
+
+  <!-- Navbar (navigation-menu-4 pattern) -->
+  <header class="navbar" id="navbar">
+    <div class="container navbar__inner">
+      <div class="navbar__left">
+        <div class="navbar__mobile">
+          <button
+            type="button"
+            class="navbar__mobile-trigger"
+            id="nav-toggle"
+            aria-label="Open menu"
+            aria-expanded="false"
+            aria-controls="nav-popover"
+          >
+            <svg
+              class="navbar__mobile-icon"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path class="navbar__mobile-icon-line navbar__mobile-icon-line--top" d="M4 12L20 12" />
+              <path class="navbar__mobile-icon-line navbar__mobile-icon-line--mid" d="M4 12H20" />
+              <path class="navbar__mobile-icon-line navbar__mobile-icon-line--bot" d="M4 12H20" />
+            </svg>
+          </button>
+          <div class="navbar__popover" id="nav-popover" hidden>
+            <nav class="navbar__popover-nav" aria-label="Mobile navigation">
+              <ul class="navbar__popover-list">
+                <li class="navbar__popover-group">
+                  <span class="navbar__popover-label">Services</span>
+                  <ul class="navbar__popover-sublist">
+                    <li><a href="#services" class="navbar__popover-link">Quality</a></li>
+                    <li><a href="#services" class="navbar__popover-link">Regulatory</a></li>
+                    <li><a href="#services" class="navbar__popover-link">Clinical</a></li>
+                    <li><a href="#services" class="navbar__popover-link">Engineering</a></li>
+                    <li><a href="#services" class="navbar__popover-link">Scientific</a></li>
+                    <li><a href="#services" class="navbar__popover-link">Pharmacovigilance</a></li>
+                  </ul>
+                </li>
+                <li class="navbar__popover-separator" role="separator" aria-orientation="horizontal"></li>
+                <li class="navbar__popover-group">
+                  <span class="navbar__popover-label">Solutions</span>
+                  <ul class="navbar__popover-sublist">
+                    <li><a href="#solutions" class="navbar__popover-link">Contingent Resourcing</a></li>
+                    <li><a href="#solutions" class="navbar__popover-link">Project Teams</a></li>
+                    <li><a href="#solutions" class="navbar__popover-link">Functional Service Provision</a></li>
+                    <li><a href="#outcomes" class="navbar__popover-link">Inspection Readiness</a></li>
+                    <li><a href="#outcomes" class="navbar__popover-link">Clinical Execution Support</a></li>
+                  </ul>
+                </li>
+                <li class="navbar__popover-separator" role="separator" aria-orientation="horizontal"></li>
+                <li><a href="#industries" class="navbar__popover-link">Industries</a></li>
+                <li><a href="#case-studies" class="navbar__popover-link">Case Studies</a></li>
+                <li><a href="#about" class="navbar__popover-link">About</a></li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <a href="#" class="navbar__logo" aria-label="Viltis home">
+          <img
+            src="assets/viltis-logo.png"
+            alt=""
+            class="navbar__logo-mark"
+            width="44"
+            height="47"
+            decoding="async"
+          >
+        </a>
+      </div>
+
+      <nav class="navbar__desktop" aria-label="Main navigation">
+        <ul class="navbar__menu">
+          <li class="navbar__menu-item navbar__menu-item--dropdown">
+            <button type="button" class="navbar__trigger" aria-expanded="false" aria-haspopup="true">
+              Services
+              <svg class="navbar__chevron" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="navbar__viewport">
+              <ul class="navbar__panel navbar__panel--desc">
+                <li>
+                  <a href="#services" class="navbar__panel-link">
+                    <span class="navbar__panel-title">Quality</span>
+                    <span class="navbar__panel-desc">GMP quality systems and audit readiness.</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#services" class="navbar__panel-link">
+                    <span class="navbar__panel-title">Regulatory</span>
+                    <span class="navbar__panel-desc">Submission strategy and agency support.</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#services" class="navbar__panel-link">
+                    <span class="navbar__panel-title">Clinical</span>
+                    <span class="navbar__panel-desc">Trial operations and clinical data management.</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#services" class="navbar__panel-link">
+                    <span class="navbar__panel-title">Engineering</span>
+                    <span class="navbar__panel-desc">Process engineering and manufacturing support.</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#services" class="navbar__panel-link">
+                    <span class="navbar__panel-title">Scientific</span>
+                    <span class="navbar__panel-desc">Analytical development and CMC strategy.</span>
+                  </a>
+                </li>
+                <li>
+                  <a href="#services" class="navbar__panel-link">
+                    <span class="navbar__panel-title">Pharmacovigilance</span>
+                    <span class="navbar__panel-desc">Safety case processing and reporting.</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </li>
+          <li class="navbar__menu-item navbar__menu-item--dropdown">
+            <button type="button" class="navbar__trigger" aria-expanded="false" aria-haspopup="true">
+              Solutions
+              <svg class="navbar__chevron" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <div class="navbar__viewport">
+              <ul class="navbar__panel navbar__panel--simple">
+                <li><a href="#solutions" class="navbar__panel-link"><span class="navbar__panel-title">Contingent Resourcing</span></a></li>
+                <li><a href="#solutions" class="navbar__panel-link"><span class="navbar__panel-title">Project Teams</span></a></li>
+                <li><a href="#solutions" class="navbar__panel-link"><span class="navbar__panel-title">Functional Service Provision</span></a></li>
+                <li><a href="#outcomes" class="navbar__panel-link"><span class="navbar__panel-title">Inspection Readiness</span></a></li>
+                <li><a href="#outcomes" class="navbar__panel-link"><span class="navbar__panel-title">Clinical Execution Support</span></a></li>
+              </ul>
+            </div>
+          </li>
+          <li class="navbar__menu-item"><a href="#industries" class="navbar__link">Industries</a></li>
+          <li class="navbar__menu-item"><a href="#case-studies" class="navbar__link">Case Studies</a></li>
+          <li class="navbar__menu-item"><a href="#about" class="navbar__link">About</a></li>
+        </ul>
+      </nav>
+
+      <div class="navbar__actions">
+        <a href="#contact" class="btn btn--primary btn--sm navbar__cta">Schedule a Consultation</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- Hero -->
+    <section class="hero" id="hero">
+      <canvas class="digital-loom-background hero__loom" id="digital-loom-background" aria-hidden="true"></canvas>
+      <div class="hero__overlay" aria-hidden="true"></div>
+      <div class="hero__glow" aria-hidden="true"></div>
+      <div class="hero__mesh" aria-hidden="true"></div>
+      <div class="hero__fade-bottom" aria-hidden="true"></div>
+      <div class="container hero__inner">
+        <div class="hero__content">
+          <p class="hero__eyebrow hero__reveal" style="--reveal-delay: 0ms">Transform Ideas into Impact</p>
+          <h1 class="hero__headline hero__reveal hero__reveal--scale" style="--reveal-delay: 180ms">Partner with Viltis for Expert Solutions</h1>
+          <p class="hero__subtitle hero__reveal" style="--reveal-delay: 360ms">
+            At Viltis, we provide effective solutions and highly skilled consultants for organizations of
+            <span
+              class="rotating-text"
+              data-rotating-text
+              data-mode="slide"
+              data-interval="2500"
+              data-words='["pharmaceutical","life sciences","biotech","medical device","diagnostics"]'
+              aria-live="polite"
+            >
+              <span class="rotating-text__ghost" aria-hidden="true">medical device</span>
+              <span class="rotating-text__current">pharmaceutical</span>
+            </span>
+          </p>
+          <div class="hero__actions hero__reveal" style="--reveal-delay: 540ms">
+            <a href="#services" class="btn btn--primary">Explore Services</a>
+            <a href="#contact" class="btn btn--outline">Schedule a Consultation</a>
+          </div>
+          <ul class="hero__chips hero__reveal" style="--reveal-delay: 720ms" aria-label="Industries served">
+            <li class="hero__chip">Pharmaceuticals</li>
+            <li class="hero__chip">Biotechnology</li>
+            <li class="hero__chip">Medical Devices</li>
+            <li class="hero__chip">Diagnostics</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- Industries Showcase -->
+    <section class="industry-showcase" id="industries">
+      <div class="industry-showcase__glow-transition" aria-hidden="true"></div>
+      <div class="container industry-showcase__inner">
+        <header class="industry-showcase__header">
+          <p class="industry-showcase__label" data-showcase-reveal>Industries We Support</p>
+          <h2 class="industry-showcase__title" data-showcase-reveal>Specialized support across regulated life sciences markets</h2>
+        </header>
+
+        <div class="industry-showcase__deck">
+          <article class="industry-card-ref industry-card-ref--dark" data-showcase-reveal style="--reveal-delay: 0ms">
+            <h3 class="industry-card-ref__title">Biologics</h3>
+            <div class="industry-card-ref__visual" aria-hidden="true">
+              <svg class="industry-card-ref__svg" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <pattern id="dots-dark" width="8" height="8" patternUnits="userSpaceOnUse">
+                    <circle cx="4" cy="4" r="1.15" fill="#ffffff" opacity="0.9"/>
+                  </pattern>
+                </defs>
+                <rect width="220" height="220" fill="url(#dots-dark)"/>
+                <path d="M-30 130 L110 -10 L250 90 L110 230 Z" fill="#0a0a0a"/>
+              </svg>
+            </div>
+            <p class="industry-card-ref__index">01 / 04</p>
+            <p class="industry-card-ref__body">We support groundbreaking advancements in vaccines, gene therapies, cell therapy, recombinant proteins, and living medicines—navigating complex regulatory pathways to bring innovative therapies to market safely.</p>
+          </article>
+
+          <article class="industry-card-ref industry-card-ref--teal" data-showcase-reveal style="--reveal-delay: 100ms">
+            <h3 class="industry-card-ref__title">Pharmaceuticals</h3>
+            <div class="industry-card-ref__visual" aria-hidden="true">
+              <svg class="industry-card-ref__svg" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 110 Q 55 40, 90 110 T 160 110 T 220 110" stroke="currentColor" stroke-width="0" fill="none"/>
+                <g fill="currentColor">
+                  <circle cx="24" cy="108" r="1.4"/><circle cx="34" cy="92" r="1.4"/><circle cx="44" cy="78" r="1.4"/><circle cx="54" cy="66" r="1.4"/><circle cx="64" cy="58" r="1.4"/><circle cx="74" cy="54" r="1.4"/><circle cx="84" cy="56" r="1.4"/><circle cx="94" cy="64" r="1.4"/><circle cx="104" cy="76" r="1.4"/><circle cx="114" cy="90" r="1.4"/><circle cx="124" cy="104" r="1.4"/><circle cx="134" cy="112" r="1.4"/><circle cx="144" cy="108" r="1.4"/><circle cx="154" cy="98" r="1.4"/><circle cx="164" cy="88" r="1.4"/><circle cx="174" cy="82" r="1.4"/><circle cx="184" cy="86" r="1.4"/><circle cx="194" cy="96" r="1.4"/><circle cx="204" cy="108" r="1.4"/>
+                  <circle cx="28" cy="118" r="1.2" opacity="0.7"/><circle cx="48" cy="128" r="1.2" opacity="0.7"/><circle cx="68" cy="132" r="1.2" opacity="0.7"/><circle cx="88" cy="128" r="1.2" opacity="0.7"/><circle cx="108" cy="120" r="1.2" opacity="0.7"/><circle cx="128" cy="118" r="1.2" opacity="0.7"/><circle cx="148" cy="122" r="1.2" opacity="0.7"/><circle cx="168" cy="128" r="1.2" opacity="0.7"/><circle cx="188" cy="124" r="1.2" opacity="0.7"/>
+                </g>
+              </svg>
+            </div>
+            <p class="industry-card-ref__index">02 / 04</p>
+            <p class="industry-card-ref__body">We support discovery, development, and production of pharmaceutical drugs—helping organizations deliver safe, effective treatments with innovation and compliance at global scale.</p>
+          </article>
+
+          <article class="industry-card-ref industry-card-ref--coral" data-showcase-reveal style="--reveal-delay: 200ms">
+            <h3 class="industry-card-ref__title">Medical Device</h3>
+            <div class="industry-card-ref__visual" aria-hidden="true">
+              <svg class="industry-card-ref__svg" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g fill="currentColor" opacity="0.9">
+                  <circle cx="110" cy="112" r="1.5"/>
+                  <circle cx="90" cy="112" r="1.3"/><circle cx="70" cy="112" r="1.2"/><circle cx="50" cy="112" r="1.1"/><circle cx="30" cy="112" r="1"/><circle cx="10" cy="112" r="0.9"/>
+                  <circle cx="130" cy="112" r="1.3"/><circle cx="150" cy="112" r="1.2"/><circle cx="170" cy="112" r="1.1"/><circle cx="190" cy="112" r="1"/><circle cx="210" cy="112" r="0.9"/>
+                  <circle cx="110" cy="92" r="1.2"/><circle cx="110" cy="72" r="1.1"/><circle cx="110" cy="52" r="1"/><circle cx="110" cy="132" r="1.2"/><circle cx="110" cy="152" r="1.1"/><circle cx="110" cy="172" r="1"/>
+                  <circle cx="95" cy="98" r="1"/><circle cx="80" cy="88" r="0.95"/><circle cx="125" cy="98" r="1"/><circle cx="140" cy="88" r="0.95"/><circle cx="95" cy="126" r="1"/><circle cx="125" cy="126" r="1"/>
+                </g>
+              </svg>
+            </div>
+            <p class="industry-card-ref__index">03 / 04</p>
+            <p class="industry-card-ref__body">From implantable devices to disposable products, we guide development and manufacturing to meet rigorous standards and improve patient outcomes worldwide.</p>
+          </article>
+
+          <article class="industry-card-ref industry-card-ref--light" data-showcase-reveal style="--reveal-delay: 300ms">
+            <h3 class="industry-card-ref__title">In-Vitro Diagnostics</h3>
+            <div class="industry-card-ref__visual" aria-hidden="true">
+              <svg class="industry-card-ref__svg" viewBox="0 0 220 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g fill="currentColor">
+                  <circle cx="70" cy="80" r="1.3"/><circle cx="78" cy="72" r="1.3"/><circle cx="86" cy="66" r="1.3"/><circle cx="94" cy="62" r="1.3"/><circle cx="102" cy="60" r="1.3"/><circle cx="110" cy="62" r="1.3"/><circle cx="118" cy="66" r="1.3"/><circle cx="126" cy="72" r="1.3"/><circle cx="134" cy="80" r="1.3"/><circle cx="140" cy="90" r="1.3"/><circle cx="144" cy="102" r="1.3"/><circle cx="144" cy="114" r="1.3"/><circle cx="140" cy="126" r="1.3"/><circle cx="134" cy="136" r="1.3"/><circle cx="126" cy="144" r="1.3"/><circle cx="118" cy="150" r="1.3"/><circle cx="110" cy="152" r="1.3"/><circle cx="102" cy="150" r="1.3"/><circle cx="94" cy="144" r="1.3"/><circle cx="86" cy="136" r="1.3"/><circle cx="78" cy="126" r="1.3"/><circle cx="72" cy="114" r="1.3"/><circle cx="68" cy="102" r="1.3"/><circle cx="68" cy="90" r="1.3"/>
+                  <circle cx="110" cy="106" r="1.1" opacity="0.55"/><circle cx="98" cy="98" r="1" opacity="0.45"/><circle cx="122" cy="98" r="1" opacity="0.45"/><circle cx="98" cy="114" r="1" opacity="0.45"/><circle cx="122" cy="114" r="1" opacity="0.45"/>
+                </g>
+              </svg>
+            </div>
+            <p class="industry-card-ref__index">04 / 04</p>
+            <p class="industry-card-ref__body">We support IVD development for critical tests on bodily samples—helping organizations design, validate, and transition reliable diagnostics from lab to market.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Service Pillars -->
+    <section class="services section section--alt" id="services">
+      <div class="container">
+        <div class="section__header">
+          <p class="section__eyebrow">Core Expertise</p>
+          <h2 class="section__title">Functional expertise across the product lifecycle</h2>
+          <p class="section__subtitle">Deep domain specialists aligned to the regulatory, quality, clinical, and technical demands of life sciences programs.</p>
+        </div>
+        <div class="services__grid">
+          <article class="service-card">
+            <div class="service-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 7V12L15 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <h3 class="service-card__title">Quality</h3>
+            <p class="service-card__text">GMP quality systems, audit readiness, deviation management, and supplier quality oversight for regulated manufacturing.</p>
+            <a href="#contact" class="service-card__link">Learn more <span aria-hidden="true">&rarr;</span></a>
+          </article>
+          <article class="service-card">
+            <div class="service-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 12L11 15L16 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3 class="service-card__title">Regulatory</h3>
+            <p class="service-card__text">Submission planning, regulatory strategy, labeling support, and agency correspondence for FDA, EMA, and global markets.</p>
+            <a href="#contact" class="service-card__link">Learn more <span aria-hidden="true">&rarr;</span></a>
+          </article>
+          <article class="service-card">
+            <div class="service-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 19L12 5L19 19H5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>
+            </div>
+            <h3 class="service-card__title">Clinical</h3>
+            <p class="service-card__text">Clinical operations, trial management, monitoring, and medical writing support across early- through late-stage development.</p>
+            <a href="#contact" class="service-card__link">Learn more <span aria-hidden="true">&rarr;</span></a>
+          </article>
+          <article class="service-card">
+            <div class="service-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 17L9 9L13 13L20 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3 class="service-card__title">Engineering</h3>
+            <p class="service-card__text">Process engineering, equipment qualification, facility support, and manufacturing technology for biologics and small molecules.</p>
+            <a href="#contact" class="service-card__link">Learn more <span aria-hidden="true">&rarr;</span></a>
+          </article>
+          <article class="service-card">
+            <div class="service-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.5"/><circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.5" stroke-dasharray="2 3"/></svg>
+            </div>
+            <h3 class="service-card__title">Scientific</h3>
+            <p class="service-card__text">Analytical development, CMC support, method validation, and scientific program leadership for complex modalities.</p>
+            <a href="#contact" class="service-card__link">Learn more <span aria-hidden="true">&rarr;</span></a>
+          </article>
+          <article class="service-card">
+            <div class="service-card__icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 4V20M8 8H16M8 16H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </div>
+            <h3 class="service-card__title">Pharmacovigilance</h3>
+            <p class="service-card__text">Safety case processing, signal detection, aggregate reporting, and risk management for post-market and clinical programs.</p>
+            <a href="#contact" class="service-card__link">Learn more <span aria-hidden="true">&rarr;</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Solutions -->
+    <section class="solutions section" id="solutions">
+      <div class="container">
+        <div class="section__header">
+          <p class="section__eyebrow">Resourcing Solutions</p>
+          <h2 class="section__title">Expert consultants and project teams when execution cannot wait</h2>
+          <p class="section__subtitle">Access specialized talent, dedicated project teams, or embedded functional support depending on the urgency and scope of your program.</p>
+        </div>
+        <div class="solutions__grid">
+          <article class="solution-card">
+            <div class="solution-card__number">01</div>
+            <h3 class="solution-card__title">Individual Consultants</h3>
+            <p class="solution-card__text">Place qualified specialists across regulatory, quality, clinical, and technical functions—often within 24–48 hours. Ideal for urgent gaps, inspection support, or targeted expertise on active programs.</p>
+            <ul class="solution-card__list">
+              <li>Rapid placement for critical roles</li>
+              <li>Flexible engagement terms</li>
+              <li>Pre-vetted life sciences specialists</li>
+            </ul>
+          </article>
+          <article class="solution-card">
+            <div class="solution-card__number">02</div>
+            <h3 class="solution-card__title">Project Teams</h3>
+            <p class="solution-card__text">Assemble cross-functional teams aligned to your scope, timeline, and delivery objectives. Teams integrate with your organization to execute complex initiatives with continuity and accountability.</p>
+            <ul class="solution-card__list">
+              <li>Multi-discipline team composition</li>
+              <li>Defined scope and milestones</li>
+              <li>On-site or remote delivery</li>
+            </ul>
+          </article>
+          <article class="solution-card">
+            <div class="solution-card__number">03</div>
+            <h3 class="solution-card__title">Functional Service Provision</h3>
+            <p class="solution-card__text">Retain strategic control while Viltis assumes responsibility for defined functions or work packages. Predictable delivery with managed staffing, execution oversight, and performance accountability.</p>
+            <ul class="solution-card__list">
+              <li>Cost-predictable delivery models</li>
+              <li>Scalable functional coverage</li>
+              <li>Retained strategic oversight</li>
+            </ul>
+          </article>
+        </div>
+        <div class="solutions__cta">
+          <a href="#contact" class="btn btn--primary">Request Consultant Support</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Outcomes -->
+    <section class="outcomes section section--alt" id="outcomes">
+      <div class="container">
+        <div class="section__header section__header--left">
+          <p class="section__eyebrow">Program Outcomes</p>
+          <h2 class="section__title">Built for high-stakes life sciences work</h2>
+          <p class="section__subtitle">Practical support aligned to the milestones, inspections, and submissions that define program success.</p>
+        </div>
+        <div class="outcomes__grid">
+          <div class="outcome-block">
+            <h3 class="outcome-block__title">Inspection Readiness</h3>
+            <p class="outcome-block__text">Mock audits, gap assessments, and remediation planning to prepare facilities and quality systems for regulatory inspections.</p>
+          </div>
+          <div class="outcome-block">
+            <h3 class="outcome-block__title">Remediation & Compliance Support</h3>
+            <p class="outcome-block__text">Structured response to 483 observations, warning letters, and quality system deficiencies with experienced remediation leads.</p>
+          </div>
+          <div class="outcome-block">
+            <h3 class="outcome-block__title">Clinical Trial Execution</h3>
+            <p class="outcome-block__text">Site management, monitoring, data review, and clinical operations support to keep trials on schedule and inspection-ready.</p>
+          </div>
+          <div class="outcome-block">
+            <h3 class="outcome-block__title">Regulatory Submission Support</h3>
+            <p class="outcome-block__text">CTD/eCTD assembly, authoring support, and submission project management for IND, NDA, BLA, and MAA filings.</p>
+          </div>
+          <div class="outcome-block">
+            <h3 class="outcome-block__title">Manufacturing & Technical Operations</h3>
+            <p class="outcome-block__text">Tech transfer, process validation, batch record review, and manufacturing support for commercial and clinical supply.</p>
+          </div>
+          <div class="outcome-block">
+            <h3 class="outcome-block__title">Pharmacovigilance Support</h3>
+            <p class="outcome-block__text">Case processing, medical review, aggregate report preparation, and safety system support for compliant signal management.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Case Studies -->
+    <section class="case-studies section" id="case-studies">
+      <div class="container">
+        <div class="section__header">
+          <p class="section__eyebrow">Case Studies</p>
+          <h2 class="section__title">Proven support across complex life sciences programs</h2>
+        </div>
+        <div class="case-studies__grid">
+          <article class="case-study-card">
+            <span class="case-study-card__category">Biologics · Quality</span>
+            <h3 class="case-study-card__title">Quality and manufacturing support for biologics program</h3>
+            <div class="case-study-card__detail">
+              <div class="case-study-card__field">
+                <span class="case-study-card__label">Challenge</span>
+                <p>A biologics sponsor needed immediate quality and manufacturing expertise to support commercial readiness ahead of a facility inspection.</p>
+              </div>
+              <div class="case-study-card__field">
+                <span class="case-study-card__label">Support Provided</span>
+                <p>Viltis deployed a cross-functional team covering GMP quality, batch record review, deviation management, and manufacturing operations.</p>
+              </div>
+              <div class="case-study-card__field">
+                <span class="case-study-card__label">Outcome</span>
+                <p>The program achieved inspection readiness on schedule, with documented remediation of open quality items prior to regulatory review.</p>
+              </div>
+            </div>
+            <a href="#contact" class="btn btn--outline case-study-card__btn">View Case Study</a>
+          </article>
+          <article class="case-study-card">
+            <span class="case-study-card__category">Regulatory · Technical Writing</span>
+            <h3 class="case-study-card__title">Technical writing and regulatory documentation support</h3>
+            <div class="case-study-card__detail">
+              <div class="case-study-card__field">
+                <span class="case-study-card__label">Challenge</span>
+                <p>An organization faced a compressed timeline for a major regulatory submission with insufficient internal authoring capacity.</p>
+              </div>
+              <div class="case-study-card__field">
+                <span class="case-study-card__label">Support Provided</span>
+                <p>Viltis provided regulatory writers and document specialists to support Module 2 summaries, CMC sections, and submission assembly.</p>
+              </div>
+              <div class="case-study-card__field">
+                <span class="case-study-card__label">Outcome</span>
+                <p>Submission materials were completed within the target window, with consistent formatting and quality review across all modules.</p>
+              </div>
+            </div>
+            <a href="#contact" class="btn btn--outline case-study-card__btn">View Case Study</a>
+          </article>
+          <article class="case-study-card">
+            <span class="case-study-card__category">Clinical · Pharmacovigilance</span>
+            <h3 class="case-study-card__title">Clinical and pharmacovigilance program support</h3>
+            <div class="case-study-card__detail">
+              <div class="case-study-card__field">
+                <span class="case-study-card__label">Challenge</span>
+                <p>A sponsor required expanded clinical operations and safety support during a Phase III program with increasing enrollment and reporting volume.</p>
+              </div>
+              <div class="case-study-card__field">
+                <span class="case-study-card__label">Support Provided</span>
+                <p>Viltis placed clinical operations specialists and pharmacovigilance professionals to support monitoring, case processing, and aggregate reporting.</p>
+              </div>
+              <div class="case-study-card__field">
+                <span class="case-study-card__label">Outcome</span>
+                <p>Enrollment targets were maintained with compliant safety reporting, enabling the program to proceed toward key regulatory milestones.</p>
+              </div>
+            </div>
+            <a href="#contact" class="btn btn--outline case-study-card__btn">View Case Study</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials section section--alt" id="about">
+      <div class="container">
+        <div class="section__header">
+          <p class="section__eyebrow">Client Perspectives</p>
+          <h2 class="section__title">Trusted by life sciences leaders</h2>
+        </div>
+
+        <div class="testimonial-slider" id="testimonial-slider">
+          <div class="testimonial-slider__controls">
+            <button type="button" class="testimonial-slider__nav testimonial-slider__nav--prev" aria-label="Previous testimonial">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+            </button>
+            <button type="button" class="testimonial-slider__nav testimonial-slider__nav--next" aria-label="Next testimonial">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </div>
+
+          <div class="testimonial-slider__viewport">
+            <div class="testimonial-slider__track">
+              <article class="testimonial-slider__slide">
+                <div class="testimonial-slider__card">
+                  <svg class="testimonial-slider__quote-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 6v1c0 1 0 1 1 1z"/></svg>
+                  <p class="testimonial-slider__text">&ldquo;Viltis found the qualified candidate we needed when others could not. They grew to provide a team of 12 consultants across technical writing, pharmacovigilance, quality assurance, and biologics manufacturing.&rdquo;</p>
+                  <div class="testimonial-slider__footer">
+                    <img class="testimonial-slider__avatar" src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=128&h=128&fit=crop&crop=face" alt="Kevin Furstoss" width="48" height="48" loading="lazy">
+                    <div>
+                      <h4 class="testimonial-slider__name">Kevin Furstoss</h4>
+                      <p class="testimonial-slider__role">Executive Director · GBT/Pfizer</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article class="testimonial-slider__slide">
+                <div class="testimonial-slider__card">
+                  <svg class="testimonial-slider__quote-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 6v1c0 1 0 1 1 1z"/></svg>
+                  <p class="testimonial-slider__text">&ldquo;Working with Viltis has been a consistently professional experience. Questions were addressed quickly, compensation was fair, and it was clear the organization genuinely cares about the consultants and clients they serve.&rdquo;</p>
+                  <div class="testimonial-slider__footer">
+                    <img class="testimonial-slider__avatar" src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=128&h=128&fit=crop&crop=face" alt="Todd S." width="48" height="48" loading="lazy">
+                    <div>
+                      <h4 class="testimonial-slider__name">Todd S.</h4>
+                      <p class="testimonial-slider__role">Biologics CMC Consultant</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article class="testimonial-slider__slide">
+                <div class="testimonial-slider__card">
+                  <svg class="testimonial-slider__quote-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 6v1c0 1 0 1 1 1z"/></svg>
+                  <p class="testimonial-slider__text">&ldquo;Viltis embedded regulatory writers ahead of our submission deadline and kept quality consistent across every module. They felt like an extension of our internal team from day one.&rdquo;</p>
+                  <div class="testimonial-slider__footer">
+                    <img class="testimonial-slider__avatar" src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=128&h=128&fit=crop&crop=face" alt="Sarah M." width="48" height="48" loading="lazy">
+                    <div>
+                      <h4 class="testimonial-slider__name">Sarah M.</h4>
+                      <p class="testimonial-slider__role">Regulatory Affairs Director · Biotech Sponsor</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article class="testimonial-slider__slide">
+                <div class="testimonial-slider__card">
+                  <svg class="testimonial-slider__quote-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 6v1c0 1 0 1 1 1z"/></svg>
+                  <p class="testimonial-slider__text">&ldquo;Their quality consultants helped us close CAPA gaps before a critical FDA inspection. The depth of life sciences expertise on the team was evident from week one.&rdquo;</p>
+                  <div class="testimonial-slider__footer">
+                    <img class="testimonial-slider__avatar" src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=128&h=128&fit=crop&crop=face" alt="David L." width="48" height="48" loading="lazy">
+                    <div>
+                      <h4 class="testimonial-slider__name">David L.</h4>
+                      <p class="testimonial-slider__role">VP Quality · Pharmaceutical Manufacturer</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+              <article class="testimonial-slider__slide">
+                <div class="testimonial-slider__card">
+                  <svg class="testimonial-slider__quote-icon" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M3 21c3 0 7-1 7-8V5c0-1.25-.756-2.017-2-2H4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2 1 0 1 0 1 1v1c0 1-1 2-2 2s-1 .008-1 1.031V21z"/><path d="M15 21c3 0 7-1 7-8V5c0-1.25-.757-2.017-2-2h-4c-1.25 0-2 .75-2 1.972V11c0 1.25.75 2 2 2h.75c0 2.25.25 4-2.75 6v1c0 1 0 1 1 1z"/></svg>
+                  <p class="testimonial-slider__text">&ldquo;Viltis staffed our clinical operations workstream with monitors and data reviewers who understood ICH-GCP expectations and kept our study inspection-ready.&rdquo;</p>
+                  <div class="testimonial-slider__footer">
+                    <img class="testimonial-slider__avatar" src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=128&h=128&fit=crop&crop=face" alt="Maria R." width="48" height="48" loading="lazy">
+                    <div>
+                      <h4 class="testimonial-slider__name">Maria R.</h4>
+                      <p class="testimonial-slider__role">Clinical Operations Lead · Global CRO</p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="testimonial-slider__dots" aria-label="Testimonial pagination"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA -->
+    <section class="cta-section" id="contact">
+      <div class="container cta-section__inner">
+        <div class="cta-section__content">
+          <h2 class="cta-section__title">Need specialized life sciences support?</h2>
+          <p class="cta-section__subtitle">Connect with Viltis to discuss your regulatory, quality, clinical, scientific, engineering, or pharmacovigilance needs.</p>
+          <div class="cta-section__actions">
+            <a href="mailto:info@viltis.com" class="btn btn--primary">Schedule a Consultation</a>
+            <a href="mailto:info@viltis.com" class="btn btn--secondary">Request Consultant Support</a>
+          </div>
+        </div>
+        <form class="contact-form" action="#" method="post">
+          <h3 class="contact-form__title">Send a message</h3>
+          <div class="contact-form__row">
+            <div class="contact-form__field">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" required placeholder="Your name">
+            </div>
+            <div class="contact-form__field">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" required placeholder="you@company.com">
+            </div>
+          </div>
+          <div class="contact-form__field">
+            <label for="company">Company</label>
+            <input type="text" id="company" name="company" placeholder="Organization name">
+          </div>
+          <div class="contact-form__field">
+            <label for="need">Area of Need</label>
+            <select id="need" name="need">
+              <option value="">Select a service area</option>
+              <option value="quality">Quality</option>
+              <option value="regulatory">Regulatory</option>
+              <option value="clinical">Clinical</option>
+              <option value="engineering">Engineering</option>
+              <option value="scientific">Scientific</option>
+              <option value="pharmacovigilance">Pharmacovigilance</option>
+              <option value="resourcing">Consultant Resourcing</option>
+            </select>
+          </div>
+          <div class="contact-form__field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="4" placeholder="Describe your program needs and timeline"></textarea>
+          </div>
+          <button type="submit" class="btn btn--primary contact-form__submit">Submit Inquiry</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container footer__intro">
+      <a href="#" class="footer__logo-link" aria-label="Viltis home">
+        <img
+          src="assets/viltis-logo.png"
+          alt=""
+          class="footer__logo-mark"
+          width="36"
+          height="38"
+          decoding="async"
+        >
+      </a>
+      <p class="footer__about">
+        Viltis delivers specialized life sciences consulting and expert resourcing for pharmaceutical, biotech, medical device, and diagnostics organizations. We connect regulated teams with the quality, regulatory, clinical, and technical talent needed to move critical programs forward.
+      </p>
+    </div>
+
+    <div class="container">
+      <div class="footer__divider" role="presentation"></div>
+    </div>
+
+    <div class="container footer__nav">
+      <div class="footer__nav-columns">
+        <ul class="footer__nav-list">
+          <li><a href="#services">Quality</a></li>
+          <li><a href="#services">Regulatory</a></li>
+          <li><a href="#services">Clinical</a></li>
+        </ul>
+        <ul class="footer__nav-list">
+          <li><a href="#services">Engineering</a></li>
+          <li><a href="#services">Scientific</a></li>
+          <li><a href="#services">Pharmacovigilance</a></li>
+        </ul>
+        <ul class="footer__nav-list">
+          <li><a href="#solutions">Contingent Resourcing</a></li>
+          <li><a href="#solutions">Project Teams</a></li>
+          <li><a href="#solutions">Functional Service Provision</a></li>
+        </ul>
+        <ul class="footer__nav-list">
+          <li><a href="#outcomes">Inspection Readiness</a></li>
+          <li><a href="#outcomes">Clinical Execution Support</a></li>
+          <li><a href="#industries">Industries</a></li>
+        </ul>
+        <ul class="footer__nav-list">
+          <li><a href="#industries">Pharmaceuticals</a></li>
+          <li><a href="#industries">Biotechnology</a></li>
+          <li><a href="#industries">Medical Devices</a></li>
+          <li><a href="#industries">Diagnostics</a></li>
+        </ul>
+        <ul class="footer__nav-list">
+          <li><a href="#about">About</a></li>
+          <li><a href="#case-studies">Case Studies</a></li>
+          <li><a href="#contact">Contact</a></li>
+          <li><a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="footer__divider" role="presentation"></div>
+    </div>
+
+    <div class="footer__bottom-bar">
+      <div class="footer__social">
+        <a href="mailto:info@viltis.com" class="footer__social-link" aria-label="Email Viltis">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 7l10 6 10-6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="https://linkedin.com" class="footer__social-link" target="_blank" rel="noopener noreferrer" aria-label="Viltis on LinkedIn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+      </div>
+
+      <div class="footer__scroll-wrap">
+        <button type="button" class="footer__scroll-toggle" id="scroll-top" aria-label="Scroll to top">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="container footer__legal">
+      <p class="footer__copyright">
+        <span>&copy; 2026 Viltis. All rights reserved.</span>
+        <span class="footer__copyright-sep" aria-hidden="true">&middot;</span>
+        <a href="mailto:info@viltis.com">info@viltis.com</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="js/digital-loom-background.js"></script>
+  <script src="js/rotating-text.js"></script>
+  <script src="js/industry-showcase.js"></script>
+  <script src="js/testimonial-slider.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
