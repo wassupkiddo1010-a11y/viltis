@@ -3,6 +3,24 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { NavigationMenu } from "@base-ui-components/react/navigation-menu";
+
+const SERVICES = [
+  ["Quality",           "GMP quality systems and audit readiness."],
+  ["Regulatory",        "Submission strategy and agency support."],
+  ["Clinical",          "Trial operations and clinical data management."],
+  ["Engineering",       "Process engineering and manufacturing support."],
+  ["Scientific",        "Analytical development and CMC strategy."],
+  ["Pharmacovigilance", "Safety case processing and reporting."],
+] as const;
+
+const PLAIN_LINKS = [
+  { label: "Work With Us", href: "/work-with-us" },
+  { label: "Case Studies", href: "/case-studies"  },
+  { label: "About",        href: "/about"         },
+  { label: "Jobs",         href: "/jobs"          },
+  { label: "Contact",      href: "/contact"       },
+] as const;
 
 export function Navbar() {
   const [scrolled,    setScrolled]    = useState(false);
@@ -114,49 +132,27 @@ export function Navbar() {
               <div className="navbar__popover" id="nav-popover" hidden={!mobileOpen}>
                 <nav className="navbar__popover-nav" aria-label="Mobile navigation">
                   <ul className="navbar__popover-list">
+                    {/* Work With Us */}
+                    <li>
+                      <Link href="/work-with-us" className="navbar__popover-link" onClick={() => setMobileOpen(false)}>Work With Us</Link>
+                    </li>
+                    <li className="navbar__popover-separator" role="separator" />
+                    {/* Services with sub-items */}
                     <li className="navbar__popover-group">
                       <span className="navbar__popover-label">Services</span>
                       <ul className="navbar__popover-sublist">
-                        {["Quality", "Regulatory", "Clinical", "Engineering", "Scientific", "Pharmacovigilance"].map(
-                          (item) => (
-                            <li key={item}>
-                              <Link href="#services" className="navbar__popover-link" onClick={() => setMobileOpen(false)}>
-                                {item}
-                              </Link>
-                            </li>
-                          )
-                        )}
-                      </ul>
-                    </li>
-                    <li className="navbar__popover-separator" role="separator" aria-orientation="horizontal" />
-                    <li className="navbar__popover-group">
-                      <span className="navbar__popover-label">Solutions</span>
-                      <ul className="navbar__popover-sublist">
-                        {[
-                          "Contingent Resourcing",
-                          "Project Teams",
-                          "Functional Service Provision",
-                          "Inspection Readiness",
-                          "Clinical Execution Support",
-                        ].map((item) => (
-                          <li key={item}>
-                            <Link
-                              href={item.includes("Inspection") || item.includes("Clinical") ? "#outcomes" : "#solutions"}
-                              className="navbar__popover-link"
-                              onClick={() => setMobileOpen(false)}
-                            >
-                              {item}
+                        {SERVICES.map(([title]) => (
+                          <li key={title}>
+                            <Link href="/services" className="navbar__popover-link" onClick={() => setMobileOpen(false)}>
+                              {title}
                             </Link>
                           </li>
                         ))}
                       </ul>
                     </li>
-                    <li className="navbar__popover-separator" role="separator" aria-orientation="horizontal" />
-                    {[
-                      ["#industries", "Industries"],
-                      ["#case-studies", "Case Studies"],
-                      ["#about", "About"],
-                    ].map(([href, label]) => (
+                    <li className="navbar__popover-separator" role="separator" />
+                    {/* Remaining plain links */}
+                    {PLAIN_LINKS.slice(1).map(({ label, href }) => (
                       <li key={href}>
                         <Link href={href} className="navbar__popover-link" onClick={() => setMobileOpen(false)}>
                           {label}
@@ -169,7 +165,7 @@ export function Navbar() {
             </div>
 
             {/* Logo mark (always visible) + wordmark text (fades out in pill) */}
-            <Link href="#" className="navbar__logo" aria-label="Viltis home">
+            <Link href="/" className="navbar__logo" aria-label="Viltis home">
               <Image
                 src="/assets/viltis-logo.png"
                 alt=""
@@ -183,79 +179,82 @@ export function Navbar() {
             </Link>
           </div>
 
-          {/* ── Desktop nav — in NORMAL FLEX FLOW (not absolute) ── */}
+          {/* ── Desktop nav ── */}
           <nav className="navbar__nav" aria-label="Main navigation">
-            <ul className="navbar__menu">
-              <li className="navbar__menu-item navbar__menu-item--dropdown">
-                <button type="button" className="navbar__trigger" aria-expanded="false" aria-haspopup="true">
-                  Services
-                  <svg className="navbar__chevron" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-                <div className="navbar__viewport">
-                  <ul className="navbar__panel navbar__panel--desc">
-                    {[
-                      ["Quality", "GMP quality systems and audit readiness."],
-                      ["Regulatory", "Submission strategy and agency support."],
-                      ["Clinical", "Trial operations and clinical data management."],
-                      ["Engineering", "Process engineering and manufacturing support."],
-                      ["Scientific", "Analytical development and CMC strategy."],
-                      ["Pharmacovigilance", "Safety case processing and reporting."],
-                    ].map(([title, desc]) => (
-                      <li key={title}>
-                        <Link href="#services" className="navbar__panel-link">
-                          <span className="navbar__panel-title">{title}</span>
-                          <span className="navbar__panel-desc">{desc}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
-              <li className="navbar__menu-item navbar__menu-item--dropdown">
-                <button type="button" className="navbar__trigger" aria-expanded="false" aria-haspopup="true">
-                  Solutions
-                  <svg className="navbar__chevron" width="12" height="12" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </button>
-                <div className="navbar__viewport">
-                  <ul className="navbar__panel navbar__panel--simple">
-                    {[
-                      "Contingent Resourcing",
-                      "Project Teams",
-                      "Functional Service Provision",
-                      "Inspection Readiness",
-                      "Clinical Execution Support",
-                    ].map((title) => (
-                      <li key={title}>
-                        <Link
-                          href={title.includes("Inspection") || title.includes("Clinical") ? "#outcomes" : "#solutions"}
-                          className="navbar__panel-link"
-                        >
-                          <span className="navbar__panel-title">{title}</span>
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </li>
-              <li className="navbar__menu-item">
-                <Link href="#industries" className="navbar__link">Industries</Link>
-              </li>
-              <li className="navbar__menu-item">
-                <Link href="#case-studies" className="navbar__link">Case Studies</Link>
-              </li>
-              <li className="navbar__menu-item">
-                <Link href="#about" className="navbar__link">About</Link>
-              </li>
-            </ul>
+            <NavigationMenu.Root className="navbar__menu-root">
+              <NavigationMenu.List className="navbar__menu">
+
+                {/* Work With Us — plain */}
+                <NavigationMenu.Item className="navbar__menu-item">
+                  <NavigationMenu.Link render={<Link href="/work-with-us" />} className="navbar__link">
+                    <span className="navbar__roll-text" aria-hidden="true"><span>Work With Us</span><span>Work With Us</span></span>
+                    <span className="sr-only">Work With Us</span>
+                  </NavigationMenu.Link>
+                </NavigationMenu.Item>
+
+                {/* Services — dropdown */}
+                <NavigationMenu.Item className="navbar__menu-item">
+                  <NavigationMenu.Trigger className="navbar__trigger">
+                    <span className="navbar__roll-text" aria-hidden="true">
+                      <span>Services</span>
+                      <span>Services</span>
+                    </span>
+                    <span className="sr-only">Services</span>
+                    <NavigationMenu.Icon className="navbar__chevron-icon">
+                      <svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M6 9L12 15L18 9" />
+                      </svg>
+                    </NavigationMenu.Icon>
+                  </NavigationMenu.Trigger>
+
+                  <NavigationMenu.Content className="navbar__base-content">
+                    <ul className="navbar__panel navbar__panel--desc">
+                      {SERVICES.map(([title, desc]) => (
+                        <li key={title}>
+                          <NavigationMenu.Link render={<Link href="/services" />} className="navbar__panel-link">
+                            <span className="navbar__panel-title">{title}</span>
+                            <span className="navbar__panel-desc">{desc}</span>
+                          </NavigationMenu.Link>
+                        </li>
+                      ))}
+                    </ul>
+                  </NavigationMenu.Content>
+                </NavigationMenu.Item>
+
+                {/* Remaining plain links */}
+                {PLAIN_LINKS.slice(1).map(({ label, href }) => (
+                  <NavigationMenu.Item key={href} className="navbar__menu-item">
+                    <NavigationMenu.Link render={<Link href={href} />} className="navbar__link">
+                      <span className="navbar__roll-text" aria-hidden="true"><span>{label}</span><span>{label}</span></span>
+                      <span className="sr-only">{label}</span>
+                    </NavigationMenu.Link>
+                  </NavigationMenu.Item>
+                ))}
+
+              </NavigationMenu.List>
+
+              <NavigationMenu.Portal>
+                <NavigationMenu.Positioner
+                  sideOffset={8}
+                  collisionPadding={{ top: 5, bottom: 5, left: 16, right: 16 }}
+                  className="navbar__base-positioner"
+                  style={{
+                    ["--duration" as string]: "0.28s",
+                    ["--easing" as string]: "cubic-bezier(0.16, 1, 0.3, 1)",
+                  }}
+                >
+                  <NavigationMenu.Popup className="navbar__base-popup">
+                    <NavigationMenu.Viewport className="navbar__base-viewport" />
+                  </NavigationMenu.Popup>
+                </NavigationMenu.Positioner>
+              </NavigationMenu.Portal>
+
+            </NavigationMenu.Root>
           </nav>
 
           {/* ── CTA — hidden inside pill ──────────────────────── */}
           <div className="navbar__actions">
-            <Link href="#contact" className="btn btn--primary btn--sm navbar__cta">
+            <Link href="/contact" className="btn btn--primary btn--sm navbar__cta">
               Schedule a Consultation
             </Link>
           </div>
