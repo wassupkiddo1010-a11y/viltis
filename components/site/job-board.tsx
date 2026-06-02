@@ -8,7 +8,6 @@ import {
   Pagination,
   PaginationContent,
   PaginationItem,
-  PaginationLink,
   PaginationEllipsis,
 } from "@/components/ui/pagination";
 
@@ -23,6 +22,14 @@ function formatDate(ts?: number | null) {
     day: "numeric",
     year: "numeric",
   }).format(new Date(ts));
+}
+
+function formatLocationDisplay(location?: string | null): string {
+  if (!location) return "";
+  // Bullhorn sometimes stores verbose strings — show a readable slice on cards
+  const cleaned = location.replace(/^\*+\s*/, "").trim();
+  if (cleaned.length <= 48) return cleaned;
+  return cleaned.slice(0, 45).trim() + "…";
 }
 
 const ON_SITE_LABEL: Record<string, string> = {
@@ -67,8 +74,16 @@ export function JobBoard({ jobs }: Props) {
   }, [jobs]);
 
   const locationOptions = useMemo(() => {
-    const locs = new Set(jobs.map((j) => j.location).filter(Boolean));
-    return ["All", ...Array.from(locs).sort()] as string[];
+    const counts = new Map<string, number>();
+    for (const j of jobs) {
+      if (j.location) counts.set(j.location, (counts.get(j.location) ?? 0) + 1);
+    }
+    // Cap at 25 locations so mobile select stays usable
+    const top = [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 25)
+      .map(([loc]) => loc);
+    return ["All", ...top.sort()] as string[];
   }, [jobs]);
 
   const filtered = useMemo(() => {
@@ -133,7 +148,11 @@ export function JobBoard({ jobs }: Props) {
             {employmentTypes.map((t) => <option key={t}>{t}</option>)}
           </select>
           <select className="job-board__select" value={locationFilter} onChange={(e) => setLocationFilter(e.target.value)} aria-label="Filter by location">
-            {locationOptions.map((l) => <option key={l}>{l}</option>)}
+            {locationOptions.map((l) => (
+              <option key={l} value={l}>
+                {l === "All" ? l : formatLocationDisplay(l)}
+              </option>
+            ))}
           </select>
         </div>
 
@@ -190,15 +209,15 @@ export function JobBoard({ jobs }: Props) {
                         {workStyle && (
                           <span className="job-card__tag job-card__tag--mode">{workStyle}</span>
                         )}
-                        {job.location && (
-                          <span className="job-card__tag job-card__tag--loc">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                              <circle cx="12" cy="10" r="3" />
-                            </svg>
-                            {job.location}
-                          </span>
-                        )}
+                      {job.location && (
+                        <span className="job-card__tag job-card__tag--loc" title={job.location}>
+                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                            <circle cx="12" cy="10" r="3" />
+                          </svg>
+                          {formatLocationDisplay(job.location)}
+                        </span>
+                      )}
                       </div>
                       {preview && <p className="job-card__preview">{preview}</p>}
                     </div>
@@ -247,7 +266,7 @@ export function JobBoard({ jobs }: Props) {
                   {showLeftEllipsis && (
                     <>
                       <PaginationItem>
-                        <PaginationLink onClick={() => goTo(1)} style={{ cursor: "pointer" }}>1</PaginationLink>
+                        <button type="button" className="job-board__pg-btn" onClick={() => goTo(1)} aria-label="Page 1">1</button>
                       </PaginationItem>
                       <PaginationItem>
                         <PaginationEllipsis />
@@ -255,29 +274,29 @@ export function JobBoard({ jobs }: Props) {
                     </>
                   )}
 
-                  {/* Page numbers */}
                   {pages.map((page) => (
                     <PaginationItem key={page}>
-                      <PaginationLink
+                      <button
+                        type="button"
+                        className={`job-board__pg-btn${currentPage === page ? " job-board__pg-btn--active" : ""}`}
                         onClick={() => goTo(page)}
-                        isActive={currentPage === page}
-                        style={{ cursor: "pointer" }}
+                        aria-label={`Page ${page}`}
+                        aria-current={currentPage === page ? "page" : undefined}
                       >
                         {page}
-                      </PaginationLink>
+                      </button>
                     </PaginationItem>
                   ))}
 
-                  {/* Right ellipsis + last */}
                   {showRightEllipsis && (
                     <>
                       <PaginationItem>
                         <PaginationEllipsis />
                       </PaginationItem>
                       <PaginationItem>
-                        <PaginationLink onClick={() => goTo(totalPages)} style={{ cursor: "pointer" }}>
+                        <button type="button" className="job-board__pg-btn" onClick={() => goTo(totalPages)} aria-label={`Page ${totalPages}`}>
                           {totalPages}
-                        </PaginationLink>
+                        </button>
                       </PaginationItem>
                     </>
                   )}

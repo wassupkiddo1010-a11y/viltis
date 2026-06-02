@@ -5,38 +5,42 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { Hero } from "./hero";
 import { IndustryCards } from "@/components/ui/industry-cards";
+import { shouldDisableHeavyEffects } from "@/lib/device";
 
 export function HeroScrollScene() {
   const sectionRef = useRef<HTMLElement>(null);
-  const wipeRef    = useRef<HTMLDivElement>(null);
+  const wipeRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    gsap.registerPlugin(ScrollTrigger);
-
     const section = sectionRef.current;
-    const wipe    = wipeRef.current;
+    const wipe = wipeRef.current;
     if (!section || !wipe) return;
 
+    // On mobile / low-end devices skip GSAP and reveal industries immediately
+    if (shouldDisableHeavyEffects()) {
+      wipe.style.display = "none";
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
     gsap.set(wipe, { xPercent: 0 });
 
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
-        trigger     : section,
-        start       : "top 80%",
-        // Scrolling down — curtain wipes off to the right
-        onEnter     : () => {
+        trigger: section,
+        start: "top 80%",
+        onEnter: () => {
           gsap.to(wipe, {
-            xPercent : 100,
-            duration : 0.7,
-            ease     : "power3.inOut",
+            xPercent: 100,
+            duration: 0.7,
+            ease: "power3.inOut",
           });
         },
-        // Scrolling back up — curtain slides back in
-        onLeaveBack : () => {
+        onLeaveBack: () => {
           gsap.to(wipe, {
-            xPercent : 0,
-            duration : 0.6,
-            ease     : "power3.inOut",
+            xPercent: 0,
+            duration: 0.6,
+            ease: "power3.inOut",
           });
         },
       });

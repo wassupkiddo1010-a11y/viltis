@@ -482,10 +482,16 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
+  height: 100dvh;
   z-index: 0;
   opacity: 0.45;
   pointer-events: none;
   display: block;
+}
+
+/* Fallback when WebGL is disabled (mobile / low-end) */
+html.no-webgl .global-loom-bg {
+  display: none;
 }
 
 /* All sections sit above the fixed canvas */
@@ -2426,8 +2432,10 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
   position: relative;
   z-index: 1;
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg-main);
-  padding-top: 80px; /* navbar height */
+  padding-top: calc(var(--navbar-height) + env(safe-area-inset-top, 0px));
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ── Hero banner ── */
@@ -2686,6 +2694,13 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
   cursor: not-allowed;
 }
 
+.job-board__pg-btn--active {
+  color: var(--teal);
+  background: rgba(32, 199, 181, 0.12);
+  border-color: rgba(32, 199, 181, 0.35);
+  font-weight: 600;
+}
+
 .job-board__no-results {
   display: flex;
   flex-direction: column;
@@ -2860,8 +2875,10 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
   position: relative;
   z-index: 1;
   min-height: 100vh;
+  min-height: 100dvh;
   background: var(--bg-main);
-  padding-top: 80px;
+  padding-top: calc(var(--navbar-height) + env(safe-area-inset-top, 0px));
+  -webkit-overflow-scrolling: touch;
 }
 
 /* ── Breadcrumb ── */
@@ -3329,6 +3346,86 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
   :root {
     --container-padding: 1.25rem;
     --space-4xl: 4rem;
+    --navbar-height: 4rem;
+  }
+
+  /* Performance: disable expensive effects on touch devices */
+  .global-loom-bg {
+    display: none !important;
+  }
+
+  .navbar {
+    backdrop-filter: blur(8px);
+  }
+
+  .navbar__popover {
+    backdrop-filter: blur(8px);
+  }
+
+  /* Jobs page — tighter hero, stronger card contrast */
+  .jobs-hero {
+    padding: clamp(1.75rem, 6vw, 2.5rem) var(--container-padding) clamp(1.5rem, 4vw, 2rem);
+  }
+
+  .jobs-hero__title {
+    font-size: clamp(1.85rem, 7vw, 2.5rem);
+  }
+
+  .jobs-board-section {
+    padding: clamp(1.5rem, 4vw, 2rem) var(--container-padding) clamp(3rem, 8vw, 4rem);
+  }
+
+  .job-board__search,
+  .job-board__select {
+    font-size: 16px; /* prevent iOS input zoom */
+    min-height: 44px;
+  }
+
+  .job-card {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--border-strong);
+  }
+
+  .job-card__title {
+    font-size: 1rem;
+    line-height: 1.35;
+    word-break: break-word;
+  }
+
+  .job-card__tag--loc {
+    max-width: 100%;
+    white-space: normal;
+    word-break: break-word;
+    line-height: 1.4;
+  }
+
+  .job-card__cta {
+    min-height: 44px;
+    padding-inline: 0.85rem;
+  }
+
+  .job-board__pg-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  .job-detail-header__title {
+    font-size: clamp(1.5rem, 6vw, 2rem);
+    word-break: break-word;
+  }
+
+  .job-detail-prose {
+    font-size: 0.9375rem;
+    line-height: 1.75;
+  }
+
+  .transition-section {
+    height: auto;
+    min-height: 100svh;
+  }
+
+  .black-wipe {
+    display: none;
   }
 
   .navbar__mobile {
@@ -3942,5 +4039,35 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
       black 94%,
       transparent 100%
     );
+  }
+}
+
+/* ── Performance & accessibility ─────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .global-loom-bg,
+  .digital-loom-background,
+  .hero__loom {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .jobs-board-section,
+  .vwqf-section,
+  .cs-section,
+  section.testimonials,
+  .cta-section,
+  .footer {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 600px;
   }
 }

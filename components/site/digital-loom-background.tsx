@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { shouldDisableHeavyEffects } from "@/lib/device";
 
 interface Props {
   /** When true: position:fixed full-page canvas for the global background layer */
@@ -9,12 +10,18 @@ interface Props {
 
 export function DigitalLoomBackground({ global: isGlobal = false }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
+    setEnabled(!shouldDisableHeavyEffects());
+  }, []);
+
+  useEffect(() => {
+    if (!enabled) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // In global mode size to window; in hero mode size to the .hero container.
     const section = isGlobal ? null : canvas.closest(".hero");
     if (!isGlobal && !section) return;
 
@@ -159,17 +166,28 @@ export function DigitalLoomBackground({ global: isGlobal = false }: Props) {
     let animationId = 0;
     let startTime = Date.now();
     let reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let isVisible = document.visibilityState === "visible";
+
+    const maxDpr = isGlobal ? 1.25 : 1.5;
 
     function resizeCanvas() {
-      const width  = isGlobal ? window.innerWidth  : (section as HTMLElement).clientWidth;
+      const width = isGlobal ? window.innerWidth : (section as HTMLElement).clientWidth;
       const height = isGlobal ? window.innerHeight : (section as HTMLElement).clientHeight;
       if (width === 0 || height === 0) return;
-      canvasEl.width  = width;
-      canvasEl.height = height;
-      glCtx.viewport(0, 0, width, height);
+      const dpr = Math.min(window.devicePixelRatio || 1, maxDpr);
+      canvasEl.width = Math.floor(width * dpr);
+      canvasEl.height = Math.floor(height * dpr);
+      canvasEl.style.width = `${width}px`;
+      canvasEl.style.height = `${height}px`;
+      glCtx.viewport(0, 0, canvasEl.width, canvasEl.height);
     }
 
     function render() {
+      if (!isVisible) {
+        animationId = 0;
+        return;
+      }
+
       const currentTime = reducedMotion ? 0 : (Date.now() - startTime) / 1000;
       glCtx.clearColor(0.02, 0.04, 0.08, 1);
       glCtx.clear(glCtx.COLOR_BUFFER_BIT);
@@ -177,11 +195,27 @@ export function DigitalLoomBackground({ global: isGlobal = false }: Props) {
       glCtx.uniform2f(programInfo.uniformLocations.resolution, canvasEl.width, canvasEl.height);
       glCtx.uniform1f(programInfo.uniformLocations.time, currentTime);
       glCtx.bindBuffer(glCtx.ARRAY_BUFFER, positionBuffer);
-      glCtx.vertexAttribPointer(programInfo.attribLocations.vertexPosition, 2, glCtx.FLOAT, false, 0, 0);
+      glCtx.vertexAttribPointer(
+        programInfo.attribLocations.vertexPosition,
+        2,
+        glCtx.FLOAT,
+        false,
+        0,
+        0
+      );
       glCtx.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
       glCtx.drawArrays(glCtx.TRIANGLE_STRIP, 0, 4);
+
       if (!reducedMotion) animationId = window.requestAnimationFrame(render);
     }
+
+    const onVisibility = () => {
+      isVisible = document.visibilityState === "visible";
+      if (isVisible && !reducedMotion && !animationId) {
+        startTime = Date.now();
+        render();
+      }
+    };
 
     resizeCanvas();
     render();
@@ -193,10 +227,12 @@ export function DigitalLoomBackground({ global: isGlobal = false }: Props) {
       resizeObserver.observe(section as Element);
     }
 
+    document.addEventListener("visibilitychange", onVisibility);
+
     const motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     const onMotionChange = (e: MediaQueryListEvent) => {
       reducedMotion = e.matches;
-      if (!reducedMotion && !animationId) {
+      if (!reducedMotion && isVisible && !animationId) {
         startTime = Date.now();
         render();
       }
@@ -210,9 +246,12 @@ export function DigitalLoomBackground({ global: isGlobal = false }: Props) {
       } else {
         resizeObserver.disconnect();
       }
+      document.removeEventListener("visibilitychange", onVisibility);
       motionQuery.removeEventListener("change", onMotionChange);
     };
-  }, [isGlobal]);
+  }, [enabled, isGlobal]);
+
+  if (!enabled) return null;
 
   if (isGlobal) {
     return (

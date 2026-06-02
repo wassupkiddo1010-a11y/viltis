@@ -30,19 +30,24 @@ export function Navbar() {
 
   useEffect(() => {
     let prevY = window.scrollY;
+    let ticking = false;
 
     const onScroll = () => {
-      const y = window.scrollY;
-      setScrolled(y > 10);
-      setPilled(y > window.innerHeight * 0.10);
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        const y = window.scrollY;
+        setScrolled(y > 10);
+        setPilled(y > window.innerHeight * 0.10);
 
-      // Hide/show only after the hero section (100vh). Within the hero, always visible.
-      if (y > window.innerHeight) {
-        setHidden(y > prevY);
-      } else {
-        setHidden(false);
-      }
-      prevY = y;
+        if (y > window.innerHeight) {
+          setHidden(y > prevY);
+        } else {
+          setHidden(false);
+        }
+        prevY = y;
+        ticking = false;
+      });
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
