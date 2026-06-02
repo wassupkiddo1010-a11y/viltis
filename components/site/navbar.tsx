@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { NavigationMenu } from "@base-ui-components/react/navigation-menu";
+import { MOBILE_MAX } from "@/lib/breakpoints";
 
 const SERVICES = [
   ["Quality",           "GMP quality systems and audit readiness."],
@@ -37,7 +38,7 @@ export function Navbar() {
       ticking = true;
       requestAnimationFrame(() => {
         const y = window.scrollY;
-        const isMobile = window.innerWidth <= 768;
+        const isMobile = window.innerWidth <= MOBILE_MAX;
 
         setScrolled(y > 10);
 
@@ -86,7 +87,7 @@ export function Navbar() {
 
   useEffect(() => {
     const onResize = () => {
-      if (window.innerWidth > 768) setMobileOpen(false);
+      if (window.innerWidth > MOBILE_MAX) setMobileOpen(false);
     };
     window.addEventListener("resize", onResize);
     return () => window.removeEventListener("resize", onResize);

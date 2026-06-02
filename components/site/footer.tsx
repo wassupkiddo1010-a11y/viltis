@@ -60,6 +60,7 @@ export function Footer() {
             <li><Link href="#industries">Diagnostics</Link></li>
           </ul>
           <ul className="footer__nav-list">
+            <li><Link href="/jobs">Jobs</Link></li>
             <li><Link href="#about">About</Link></li>
             <li><Link href="#case-studies">Case Studies</Link></li>
             <li><Link href="#contact">Contact</Link></li>

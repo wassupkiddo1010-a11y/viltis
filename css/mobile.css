@@ -1,0 +1,390 @@
+/* ==========================================================================
+   Viltis — Dedicated Mobile / Phone View Layer
+   Scoped to phones (≤768px) and html.mobile-view.
+   Desktop styles in styles.css are unchanged; this file only adds phone UX.
+   ========================================================================== */
+
+/* ── Mobile design tokens ─────────────────────────────────────────────────── */
+html.mobile-view {
+  --mobile-nav-height: 3.75rem;
+  --mobile-touch-min: 44px;
+  --mobile-page-pad-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px));
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Reserve space for fixed bottom nav */
+html.mobile-view body.has-mobile-chrome {
+  padding-bottom: var(--mobile-page-pad-bottom);
+}
+
+/* ── Mobile bottom navigation ─────────────────────────────────────────────── */
+.mobile-bottom-nav {
+  display: none;
+}
+
+html.mobile-view .mobile-bottom-nav {
+  display: block;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1200;
+  background: rgba(5, 7, 13, 0.96);
+  border-top: 1px solid var(--border-strong);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.35);
+}
+
+.mobile-bottom-nav__list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  min-height: var(--mobile-nav-height);
+}
+
+.mobile-bottom-nav__item {
+  min-width: 0;
+}
+
+.mobile-bottom-nav__link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+  min-height: var(--mobile-nav-height);
+  padding: 0.35rem 0.25rem;
+  color: var(--text-soft);
+  text-decoration: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s ease;
+}
+
+.mobile-bottom-nav__link:active {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.mobile-bottom-nav__link--active {
+  color: var(--teal);
+}
+
+.mobile-bottom-nav__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+.mobile-bottom-nav__label {
+  font-size: 0.625rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+}
+
+/* ── Navbar: cleaner mobile header (CTA lives in drawer + bottom nav) ─────── */
+@media (max-width: 768px) {
+  html.mobile-view .navbar__actions {
+    display: none;
+  }
+
+  html.mobile-view .navbar__inner {
+    gap: 0.5rem;
+  }
+
+  html.mobile-view .navbar__mobile-trigger {
+    min-width: var(--mobile-touch-min);
+    min-height: var(--mobile-touch-min);
+  }
+}
+
+/* ── Hero: full-width touch targets ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  html.mobile-view .hero__actions {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 0.75rem;
+  }
+
+  html.mobile-view .hero__actions .btn {
+    width: 100%;
+    min-height: var(--mobile-touch-min);
+    justify-content: center;
+  }
+
+  html.mobile-view .hero__chips {
+    gap: 0.5rem;
+  }
+
+  html.mobile-view .hero__chip {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.65rem;
+  }
+}
+
+/* ── Core expertise / solutions list ─────────────────────────────────────── */
+@media (max-width: 768px) {
+  html.mobile-view .vwqf-row {
+    padding: 1rem 0;
+  }
+
+  html.mobile-view .vwqf-row__title {
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  html.mobile-view .vwqf-brackets {
+    display: none;
+  }
+
+  html.mobile-view .vwqf-section {
+    padding-inline: var(--container-padding);
+  }
+}
+
+/* ── Case studies carousel (phone sizing) ────────────────────────────────── */
+@media (max-width: 768px) {
+  html.mobile-view .cs-section {
+    padding-top: clamp(3rem, 8vw, 4.5rem);
+  }
+
+  html.mobile-view .cs-header {
+    margin-bottom: 2rem;
+    padding-inline: var(--container-padding);
+  }
+
+  html.mobile-view .cs-heading {
+    font-size: clamp(1.65rem, 7vw, 2.25rem);
+  }
+
+  html.mobile-view .cs-carousel {
+    height: clamp(440px, 62vh, 520px);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+  }
+
+  html.mobile-view .cs-track {
+    gap: 28px;
+  }
+
+  html.mobile-view .cs-card {
+    padding: 1.35rem;
+    border-radius: 18px;
+  }
+
+  html.mobile-view .cs-card__title {
+    font-size: 0.9375rem;
+  }
+
+  html.mobile-view .cs-card__tagline {
+    font-size: 0.72rem;
+    white-space: pre-line;
+  }
+
+  html.mobile-view .cs-card__glyph svg {
+    width: 44px;
+    height: 44px;
+  }
+
+  html.mobile-view .cs-drag-pill {
+    display: none !important;
+  }
+
+  html.mobile-view .cs-dots {
+    padding: 1.25rem 0 1.75rem;
+  }
+
+  html.mobile-view .cs-dot {
+    min-width: 10px;
+    min-height: 10px;
+    padding: 6px;
+  }
+
+  /* Always show link on touch — no hover dependency */
+  html.mobile-view .cs-card__go-btn {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  html.mobile-view .cs-carousel {
+    height: clamp(400px, 58vh, 480px);
+  }
+}
+
+/* ── Testimonials: slower marquee, readable cards ─────────────────────────── */
+@media (max-width: 768px) {
+  html.mobile-view .tm-track {
+    animation-duration: 36s;
+  }
+
+  html.mobile-view .tm-card {
+    min-width: min(280px, 78vw);
+  }
+}
+
+/* ── Contact / CTA section ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  html.mobile-view .cta-section__inner {
+    gap: 2rem;
+  }
+
+  html.mobile-view .contact-form input,
+  html.mobile-view .contact-form select,
+  html.mobile-view .contact-form textarea {
+    font-size: 16px;
+    min-height: var(--mobile-touch-min);
+  }
+
+  html.mobile-view .contact-form textarea {
+    min-height: 7rem;
+  }
+
+  html.mobile-view .contact-form__submit {
+    width: 100%;
+    min-height: var(--mobile-touch-min);
+  }
+}
+
+/* ── Jobs board (phone polish) ─────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  html.mobile-view .jobs-page,
+  html.mobile-view .job-detail-page {
+    padding-bottom: calc(var(--space-xl) + var(--mobile-page-pad-bottom, 0px));
+  }
+
+  html.mobile-view .job-board__filters {
+    gap: 0.75rem;
+  }
+
+  html.mobile-view .job-board__selects {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  html.mobile-view .job-board__select {
+    width: 100%;
+  }
+}
+
+/* ── Job detail page ───────────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  html.mobile-view .job-detail-header__attrs {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  html.mobile-view .job-detail-header__cta,
+  html.mobile-view .job-detail-bottom-cta {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  html.mobile-view .job-detail-header__cta .btn,
+  html.mobile-view .job-detail-bottom-cta .btn {
+    width: 100%;
+    min-height: var(--mobile-touch-min);
+    justify-content: center;
+  }
+
+  html.mobile-view .job-detail-breadcrumb__inner {
+    padding-block: 0.75rem;
+  }
+
+  html.mobile-view .job-detail-prose {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  html.mobile-view .job-detail-prose table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+/* ── Placeholder / secondary pages ─────────────────────────────────────────── */
+@media (max-width: 768px) {
+  html.mobile-view .page-placeholder {
+    min-height: calc(100dvh - var(--navbar-height));
+    padding: var(--space-3xl) var(--container-padding) var(--mobile-page-pad-bottom);
+  }
+
+  html.mobile-view .page-placeholder__title {
+    font-size: clamp(2rem, 8vw, 2.75rem);
+  }
+
+  html.mobile-view .page-placeholder .btn {
+    min-height: var(--mobile-touch-min);
+    width: 100%;
+    max-width: 16rem;
+    justify-content: center;
+  }
+}
+
+/* ── Footer: compact phone layout ──────────────────────────────────────────── */
+@media (max-width: 768px) {
+  html.mobile-view .footer {
+    padding-bottom: calc(var(--space-xl) + var(--mobile-page-pad-bottom, 0px));
+  }
+
+  html.mobile-view .footer__about {
+    font-size: 0.875rem;
+    line-height: 1.65;
+  }
+
+  html.mobile-view .footer__nav-columns {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 1rem;
+  }
+
+  html.mobile-view .footer__nav-list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding-block: 0.25rem;
+  }
+
+  html.mobile-view .footer__scroll-toggle {
+    min-width: var(--mobile-touch-min);
+    min-height: var(--mobile-touch-min);
+  }
+}
+
+@media (max-width: 480px) {
+  html.mobile-view .footer__nav-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Global touch & scroll polish on phones ────────────────────────────────── */
+@media (max-width: 768px) {
+  html.mobile-view .btn {
+    touch-action: manipulation;
+  }
+
+  html.mobile-view a:not(.btn) {
+    touch-action: manipulation;
+  }
+
+  html.mobile-view .skip-link:focus {
+    top: calc(env(safe-area-inset-top, 0px) + 0.5rem);
+  }
+}
+
+/* ── Performance: phone-only effect reduction (complements perf-reduced) ─── */
+@media (max-width: 768px) {
+  html.mobile-view .hero__reveal {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

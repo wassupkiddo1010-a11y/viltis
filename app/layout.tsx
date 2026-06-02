@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { PerformanceMode } from "@/components/site/performance-mode";
+import { MobileViewRoot } from "@/components/site/mobile-view-root";
+import { MobileBottomNav } from "@/components/mobile/mobile-bottom-nav";
 
 export const metadata: Metadata = {
   title: "Viltis | Life Sciences Consulting & Expert Resourcing",
@@ -12,6 +14,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  themeColor: "#05070d",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -23,7 +26,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body suppressHydrationWarning>
         <PerformanceMode />
+        <MobileViewRoot />
         {children}
+        <MobileBottomNav />
       </body>
     </html>
   );

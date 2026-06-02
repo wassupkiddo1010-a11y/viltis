@@ -7,11 +7,10 @@ import {
   useMotionValue,
   animate as motionAnimate,
 } from "framer-motion";
+import { useCarouselLayout } from "@/hooks/use-carousel-layout";
+import { useIsMobile } from "@/hooks/use-mobile";
 
-/* ─── Layout constants ──────────────────────────────────────────────────── */
-const CARD_W = 420;
-const CARD_H = 590;
-const GAP = 52;
+/* ─── Layout constants (desktop defaults; overridden via hook) ─────────── */
 
 /* ─── SVG Glyphs ────────────────────────────────────────────────────────── */
 function GlyphHex({ color }: { color: string }) {
@@ -174,20 +173,21 @@ function BracketFrame({ color, inset = 14 }: { color: string; inset?: number }) 
 }
 
 /* ─── Active Card ───────────────────────────────────────────────────────── */
-function ActiveCard({ card }: { card: CaseCard }) {
+function ActiveCard({ card, layout, touchMode }: { card: CaseCard; layout: { cardW: number; cardH: number }; touchMode: boolean }) {
   const [hovered, setHovered] = useState(false);
+  const showLink = touchMode || hovered;
 
   return (
     <div
       className="cs-card"
       style={{
-        width: CARD_W,
-        height: CARD_H,
-        background: hovered ? card.colorFull : card.colorMuted,
+        width: layout.cardW,
+        height: layout.cardH,
+        background: hovered && !touchMode ? card.colorFull : card.colorMuted,
         color: card.textColor,
       }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      onMouseEnter={() => !touchMode && setHovered(true)}
+      onMouseLeave={() => !touchMode && setHovered(false)}
     >
       <BracketFrame color={card.textColor} inset={14} />
 
@@ -209,16 +209,16 @@ function ActiveCard({ card }: { card: CaseCard }) {
       {/* Footer */}
       <div className="cs-card__footer">
         <AnimatePresence mode="wait">
-          {hovered ? (
+          {showLink ? (
             <motion.a
               key="go"
               href={card.url}
               target="_blank"
               rel="noopener noreferrer"
               className="cs-card__go-btn"
-              initial={{ opacity: 0, y: 8 }}
+              initial={touchMode ? false : { opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
+              exit={touchMode ? undefined : { opacity: 0, y: 8 }}
               transition={{ duration: 0.2 }}
               onClick={(e) => e.stopPropagation()}
             >
@@ -243,11 +243,19 @@ function ActiveCard({ card }: { card: CaseCard }) {
 }
 
 /* ─── Ghost Card ────────────────────────────────────────────────────────── */
-function GhostCard({ card, onClick }: { card: CaseCard; onClick: () => void }) {
+function GhostCard({
+  card,
+  layout,
+  onClick,
+}: {
+  card: CaseCard;
+  layout: { cardW: number; cardH: number };
+  onClick: () => void;
+}) {
   return (
     <div
       className="cs-ghost"
-      style={{ width: CARD_W, height: CARD_H }}
+      style={{ width: layout.cardW, height: layout.cardH }}
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -268,6 +276,9 @@ export function CaseStudiesSection() {
   const [isDragging, setIsDragging] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [inCarousel, setInCarousel] = useState(false);
+  const layout = useCarouselLayout();
+  const isMobile = useIsMobile();
+  const { cardW, cardH, gap } = layout;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -280,7 +291,7 @@ export function CaseStudiesSection() {
     (index: number, instant = false) => {
       if (!containerRef.current) return;
       const w = containerRef.current.offsetWidth;
-      const targetX = w / 2 - index * (CARD_W + GAP) - CARD_W / 2;
+      const targetX = w / 2 - index * (cardW + gap) - cardW / 2;
       if (instant) {
         x.set(targetX);
       } else {
@@ -292,7 +303,7 @@ export function CaseStudiesSection() {
         });
       }
     },
-    [x]
+    [x, cardW, gap]
   );
 
   /* Initial snap (one rAF so layout has resolved) */
@@ -310,7 +321,7 @@ export function CaseStudiesSection() {
     snapToIndex(activeIndex);
   }, [activeIndex, snapToIndex]);
 
-  /* Re-snap on container resize */
+  /* Re-snap on container resize or layout change */
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -318,6 +329,10 @@ export function CaseStudiesSection() {
     ro.observe(el);
     return () => ro.disconnect();
   }, [activeIndex, snapToIndex]);
+
+  useEffect(() => {
+    snapToIndex(activeIndex, true);
+  }, [cardW, gap, activeIndex, snapToIndex]);
 
   /* Wheel navigation */
   useEffect(() => {
@@ -360,8 +375,8 @@ export function CaseStudiesSection() {
     setIsDragging(false);
     const dx = e.clientX - dragStartX.current;
     let next = activeIndex;
-    if (dx < -(CARD_W / 5) && activeIndex < CARDS.length - 1) next = activeIndex + 1;
-    else if (dx > CARD_W / 5 && activeIndex > 0) next = activeIndex - 1;
+    if (dx < -(cardW / 5) && activeIndex < CARDS.length - 1) next = activeIndex + 1;
+    else if (dx > cardW / 5 && activeIndex > 0) next = activeIndex - 1;
     if (next !== activeIndex) setActiveIndex(next);
     else snapToIndex(activeIndex);
   };
@@ -402,23 +417,24 @@ export function CaseStudiesSection() {
         onMouseLeave={() => setInCarousel(false)}
         style={{ cursor: isDragging ? "grabbing" : "grab" }}
       >
-        <motion.div className="cs-track" style={{ x }}>
+        <motion.div className="cs-track" style={{ x, gap }}>
           {CARDS.map((card, i) =>
             i === activeIndex ? (
-              <ActiveCard key={card.id} card={card} />
+              <ActiveCard key={card.id} card={card} layout={{ cardW, cardH }} touchMode={isMobile} />
             ) : (
               <GhostCard
                 key={card.id}
                 card={card}
+                layout={{ cardW, cardH }}
                 onClick={() => setActiveIndex(i)}
               />
             )
           )}
         </motion.div>
 
-        {/* Drag pill */}
+        {/* Drag pill — desktop only */}
         <AnimatePresence>
-          {inCarousel && !isDragging && (
+          {inCarousel && !isDragging && !isMobile && (
             <motion.div
               className="cs-drag-pill"
               style={{ left: mousePos.x, top: mousePos.y }}

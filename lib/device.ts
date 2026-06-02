@@ -1,8 +1,10 @@
 /** Client-side helpers for responsive performance tuning. */
 
+import { MEDIA_QUERIES } from "@/lib/breakpoints";
+
 export function isMobileViewport(): boolean {
   if (typeof window === "undefined") return false;
-  return window.matchMedia("(max-width: 768px)").matches;
+  return window.matchMedia(MEDIA_QUERIES.mobile).matches;
 }
 
 export function prefersReducedMotion(): boolean {
