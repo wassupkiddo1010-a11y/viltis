@@ -205,10 +205,14 @@ html.mobile-view .mobile-bottom-nav {
     padding: 6px;
   }
 
-  /* Always show link on touch — no hover dependency */
-  html.mobile-view .cs-card__go-btn {
-    opacity: 1 !important;
-    transform: none !important;
+  /* Case study cards: show link on touch, label on desktop hover */
+  html.mobile-view .cs-card__go-btn--always {
+    display: inline-flex;
+    opacity: 1;
+  }
+
+  html.mobile-view .cs-card__website-label--desktop {
+    display: none;
   }
 }
 

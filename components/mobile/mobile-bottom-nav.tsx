@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -51,11 +52,8 @@ const NAV_ITEMS = [
   },
 ] as const;
 
-export function MobileBottomNav() {
-  const pathname = usePathname();
-  const isMobile = useIsMobile();
-
-  if (!isMobile) return null;
+function MobileBottomNavInner() {
+  const pathname = usePathname() ?? "/";
 
   return (
     <nav className="mobile-bottom-nav" aria-label="Mobile quick navigation">
@@ -78,4 +76,17 @@ export function MobileBottomNav() {
       </ul>
     </nav>
   );
+}
+
+export function MobileBottomNav() {
+  const isMobile = useIsMobile();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted || !isMobile) return null;
+
+  return <MobileBottomNavInner />;
 }

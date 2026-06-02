@@ -10,8 +10,6 @@ import {
 import { useCarouselLayout } from "@/hooks/use-carousel-layout";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-/* ─── Layout constants (desktop defaults; overridden via hook) ─────────── */
-
 /* ─── SVG Glyphs ────────────────────────────────────────────────────────── */
 function GlyphHex({ color }: { color: string }) {
   return (
@@ -173,9 +171,8 @@ function BracketFrame({ color, inset = 14 }: { color: string; inset?: number }) 
 }
 
 /* ─── Active Card ───────────────────────────────────────────────────────── */
-function ActiveCard({ card, layout, touchMode }: { card: CaseCard; layout: { cardW: number; cardH: number }; touchMode: boolean }) {
+function ActiveCard({ card, layout }: { card: CaseCard; layout: { cardW: number; cardH: number } }) {
   const [hovered, setHovered] = useState(false);
-  const showLink = touchMode || hovered;
 
   return (
     <div
@@ -183,11 +180,11 @@ function ActiveCard({ card, layout, touchMode }: { card: CaseCard; layout: { car
       style={{
         width: layout.cardW,
         height: layout.cardH,
-        background: hovered && !touchMode ? card.colorFull : card.colorMuted,
+        background: hovered ? card.colorFull : card.colorMuted,
         color: card.textColor,
       }}
-      onMouseEnter={() => !touchMode && setHovered(true)}
-      onMouseLeave={() => !touchMode && setHovered(false)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <BracketFrame color={card.textColor} inset={14} />
 
@@ -208,35 +205,22 @@ function ActiveCard({ card, layout, touchMode }: { card: CaseCard; layout: { car
 
       {/* Footer */}
       <div className="cs-card__footer">
-        <AnimatePresence mode="wait">
-          {showLink ? (
-            <motion.a
-              key="go"
-              href={card.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cs-card__go-btn"
-              initial={touchMode ? false : { opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={touchMode ? undefined : { opacity: 0, y: 8 }}
-              transition={{ duration: 0.2 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              GO TO WEBSITE
-            </motion.a>
-          ) : (
-            <motion.span
-              key="label"
-              className="cs-card__website-label"
-              style={{ color: card.textColor }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.5 }}
-              exit={{ opacity: 0 }}
-            >
-              WEBSITE
-            </motion.span>
-          )}
-        </AnimatePresence>
+        <a
+          href={card.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="cs-card__go-btn cs-card__go-btn--always"
+          onClick={(e) => e.stopPropagation()}
+        >
+          GO TO WEBSITE
+        </a>
+        <span
+          className="cs-card__website-label cs-card__website-label--desktop"
+          style={{ color: card.textColor }}
+          aria-hidden="true"
+        >
+          WEBSITE
+        </span>
       </div>
     </div>
   );
@@ -420,7 +404,7 @@ export function CaseStudiesSection() {
         <motion.div className="cs-track" style={{ x, gap }}>
           {CARDS.map((card, i) =>
             i === activeIndex ? (
-              <ActiveCard key={card.id} card={card} layout={{ cardW, cardH }} touchMode={isMobile} />
+              <ActiveCard key={card.id} card={card} layout={{ cardW, cardH }} />
             ) : (
               <GhostCard
                 key={card.id}
