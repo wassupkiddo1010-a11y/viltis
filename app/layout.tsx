@@ -1,9 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Suspense } from "react";
 import "./globals.css";
 import { PerformanceMode } from "@/components/site/performance-mode";
 import { MobileViewRoot } from "@/components/site/mobile-view-root";
-import { MobileBottomNav } from "@/components/mobile/mobile-bottom-nav";
 
 export const metadata: Metadata = {
   title: "Viltis | Life Sciences Consulting & Expert Resourcing",
@@ -29,9 +27,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <PerformanceMode />
         <MobileViewRoot />
         {children}
-        <Suspense fallback={null}>
-          <MobileBottomNav />
-        </Suspense>
       </body>
     </html>
   );

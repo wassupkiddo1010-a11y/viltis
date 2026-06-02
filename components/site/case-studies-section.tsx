@@ -7,8 +7,11 @@ import {
   useMotionValue,
   animate as motionAnimate,
 } from "framer-motion";
-import { useCarouselLayout } from "@/hooks/use-carousel-layout";
-import { useIsMobile } from "@/hooks/use-mobile";
+
+/* ─── Layout constants ──────────────────────────────────────────────────── */
+const CARD_W = 420;
+const CARD_H = 590;
+const GAP = 52;
 
 /* ─── SVG Glyphs ────────────────────────────────────────────────────────── */
 function GlyphHex({ color }: { color: string }) {
@@ -171,20 +174,21 @@ function BracketFrame({ color, inset = 14 }: { color: string; inset?: number }) 
 }
 
 /* ─── Active Card ───────────────────────────────────────────────────────── */
-function ActiveCard({ card, layout }: { card: CaseCard; layout: { cardW: number; cardH: number } }) {
+function ActiveCard({ card }: { card: CaseCard }) {
   const [hovered, setHovered] = useState(false);
 
   return (
     <div
       className="cs-card"
       style={{
-        width: layout.cardW,
-        height: layout.cardH,
+        width: CARD_W,
+        height: CARD_H,
         background: hovered ? card.colorFull : card.colorMuted,
         color: card.textColor,
       }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onTouchStart={() => setHovered(true)}
     >
       <BracketFrame color={card.textColor} inset={14} />
 
@@ -205,41 +209,46 @@ function ActiveCard({ card, layout }: { card: CaseCard; layout: { cardW: number;
 
       {/* Footer */}
       <div className="cs-card__footer">
-        <a
-          href={card.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="cs-card__go-btn cs-card__go-btn--always"
-          onClick={(e) => e.stopPropagation()}
-        >
-          GO TO WEBSITE
-        </a>
-        <span
-          className="cs-card__website-label cs-card__website-label--desktop"
-          style={{ color: card.textColor }}
-          aria-hidden="true"
-        >
-          WEBSITE
-        </span>
+        <AnimatePresence mode="wait">
+          {hovered ? (
+            <motion.a
+              key="go"
+              href={card.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="cs-card__go-btn"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              GO TO WEBSITE
+            </motion.a>
+          ) : (
+            <motion.span
+              key="label"
+              className="cs-card__website-label"
+              style={{ color: card.textColor }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 0.5 }}
+              exit={{ opacity: 0 }}
+            >
+              WEBSITE
+            </motion.span>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
 }
 
 /* ─── Ghost Card ────────────────────────────────────────────────────────── */
-function GhostCard({
-  card,
-  layout,
-  onClick,
-}: {
-  card: CaseCard;
-  layout: { cardW: number; cardH: number };
-  onClick: () => void;
-}) {
+function GhostCard({ card, onClick }: { card: CaseCard; onClick: () => void }) {
   return (
     <div
       className="cs-ghost"
-      style={{ width: layout.cardW, height: layout.cardH }}
+      style={{ width: CARD_W, height: CARD_H }}
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -260,9 +269,6 @@ export function CaseStudiesSection() {
   const [isDragging, setIsDragging] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [inCarousel, setInCarousel] = useState(false);
-  const layout = useCarouselLayout();
-  const isMobile = useIsMobile();
-  const { cardW, cardH, gap } = layout;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -275,7 +281,7 @@ export function CaseStudiesSection() {
     (index: number, instant = false) => {
       if (!containerRef.current) return;
       const w = containerRef.current.offsetWidth;
-      const targetX = w / 2 - index * (cardW + gap) - cardW / 2;
+      const targetX = w / 2 - index * (CARD_W + GAP) - CARD_W / 2;
       if (instant) {
         x.set(targetX);
       } else {
@@ -287,7 +293,7 @@ export function CaseStudiesSection() {
         });
       }
     },
-    [x, cardW, gap]
+    [x]
   );
 
   /* Initial snap (one rAF so layout has resolved) */
@@ -305,7 +311,7 @@ export function CaseStudiesSection() {
     snapToIndex(activeIndex);
   }, [activeIndex, snapToIndex]);
 
-  /* Re-snap on container resize or layout change */
+  /* Re-snap on container resize */
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -313,10 +319,6 @@ export function CaseStudiesSection() {
     ro.observe(el);
     return () => ro.disconnect();
   }, [activeIndex, snapToIndex]);
-
-  useEffect(() => {
-    snapToIndex(activeIndex, true);
-  }, [cardW, gap, activeIndex, snapToIndex]);
 
   /* Wheel navigation */
   useEffect(() => {
@@ -359,8 +361,8 @@ export function CaseStudiesSection() {
     setIsDragging(false);
     const dx = e.clientX - dragStartX.current;
     let next = activeIndex;
-    if (dx < -(cardW / 5) && activeIndex < CARDS.length - 1) next = activeIndex + 1;
-    else if (dx > cardW / 5 && activeIndex > 0) next = activeIndex - 1;
+    if (dx < -(CARD_W / 5) && activeIndex < CARDS.length - 1) next = activeIndex + 1;
+    else if (dx > CARD_W / 5 && activeIndex > 0) next = activeIndex - 1;
     if (next !== activeIndex) setActiveIndex(next);
     else snapToIndex(activeIndex);
   };
@@ -401,24 +403,23 @@ export function CaseStudiesSection() {
         onMouseLeave={() => setInCarousel(false)}
         style={{ cursor: isDragging ? "grabbing" : "grab" }}
       >
-        <motion.div className="cs-track" style={{ x, gap }}>
+        <motion.div className="cs-track" style={{ x }}>
           {CARDS.map((card, i) =>
             i === activeIndex ? (
-              <ActiveCard key={card.id} card={card} layout={{ cardW, cardH }} />
+              <ActiveCard key={card.id} card={card} />
             ) : (
               <GhostCard
                 key={card.id}
                 card={card}
-                layout={{ cardW, cardH }}
                 onClick={() => setActiveIndex(i)}
               />
             )
           )}
         </motion.div>
 
-        {/* Drag pill — desktop only */}
+        {/* Drag pill */}
         <AnimatePresence>
-          {inCarousel && !isDragging && !isMobile && (
+          {inCarousel && !isDragging && (
             <motion.div
               className="cs-drag-pill"
               style={{ left: mousePos.x, top: mousePos.y }}

@@ -4112,28 +4112,6 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
   text-transform: uppercase;
 }
 
-/* Desktop: hover reveals link; mobile overrides in mobile.css */
-@media (min-width: 769px) {
-  .cs-card__go-btn--always {
-    display: none;
-    opacity: 0;
-  }
-
-  .cs-card:hover .cs-card__go-btn--always {
-    display: inline-flex;
-    opacity: 1;
-  }
-
-  .cs-card__website-label--desktop {
-    display: inline;
-    opacity: 0.5;
-  }
-
-  .cs-card:hover .cs-card__website-label--desktop {
-    display: none;
-  }
-}
-
 /* ── Ghost card ──────────────────────────────────────────────────────────── */
 .cs-ghost {
   flex-shrink: 0;

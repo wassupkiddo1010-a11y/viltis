@@ -6,87 +6,12 @@
 
 /* ── Mobile design tokens ─────────────────────────────────────────────────── */
 html.mobile-view {
-  --mobile-nav-height: 3.75rem;
   --mobile-touch-min: 44px;
-  --mobile-page-pad-bottom: calc(var(--mobile-nav-height) + env(safe-area-inset-bottom, 0px));
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
-/* Reserve space for fixed bottom nav */
-html.mobile-view body.has-mobile-chrome {
-  padding-bottom: var(--mobile-page-pad-bottom);
-}
-
-/* ── Mobile bottom navigation ─────────────────────────────────────────────── */
-.mobile-bottom-nav {
-  display: none;
-}
-
-html.mobile-view .mobile-bottom-nav {
-  display: block;
-  position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  z-index: 1200;
-  background: rgba(5, 7, 13, 0.96);
-  border-top: 1px solid var(--border-strong);
-  padding-bottom: env(safe-area-inset-bottom, 0px);
-  box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.35);
-}
-
-.mobile-bottom-nav__list {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  min-height: var(--mobile-nav-height);
-}
-
-.mobile-bottom-nav__item {
-  min-width: 0;
-}
-
-.mobile-bottom-nav__link {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.2rem;
-  min-height: var(--mobile-nav-height);
-  padding: 0.35rem 0.25rem;
-  color: var(--text-soft);
-  text-decoration: none;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  transition: color 0.15s ease;
-}
-
-.mobile-bottom-nav__link:active {
-  background: rgba(255, 255, 255, 0.04);
-}
-
-.mobile-bottom-nav__link--active {
-  color: var(--teal);
-}
-
-.mobile-bottom-nav__icon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 0;
-}
-
-.mobile-bottom-nav__label {
-  font-size: 0.625rem;
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  line-height: 1.2;
-}
-
-/* ── Navbar: cleaner mobile header (CTA lives in drawer + bottom nav) ─────── */
+/* ── Navbar: cleaner mobile header (CTA lives in drawer) ─────── */
 @media (max-width: 768px) {
   html.mobile-view .navbar__actions {
     display: none;
@@ -204,16 +129,6 @@ html.mobile-view .mobile-bottom-nav {
     min-height: 10px;
     padding: 6px;
   }
-
-  /* Case study cards: show link on touch, label on desktop hover */
-  html.mobile-view .cs-card__go-btn--always {
-    display: inline-flex;
-    opacity: 1;
-  }
-
-  html.mobile-view .cs-card__website-label--desktop {
-    display: none;
-  }
 }
 
 @media (max-width: 480px) {
@@ -260,7 +175,7 @@ html.mobile-view .mobile-bottom-nav {
 @media (max-width: 768px) {
   html.mobile-view .jobs-page,
   html.mobile-view .job-detail-page {
-    padding-bottom: calc(var(--space-xl) + var(--mobile-page-pad-bottom, 0px));
+    padding-bottom: var(--space-xl);
   }
 
   html.mobile-view .job-board__filters {
@@ -319,7 +234,7 @@ html.mobile-view .mobile-bottom-nav {
 @media (max-width: 768px) {
   html.mobile-view .page-placeholder {
     min-height: calc(100dvh - var(--navbar-height));
-    padding: var(--space-3xl) var(--container-padding) var(--mobile-page-pad-bottom);
+    padding: var(--space-3xl) var(--container-padding);
   }
 
   html.mobile-view .page-placeholder__title {
@@ -337,7 +252,7 @@ html.mobile-view .mobile-bottom-nav {
 /* ── Footer: compact phone layout ──────────────────────────────────────────── */
 @media (max-width: 768px) {
   html.mobile-view .footer {
-    padding-bottom: calc(var(--space-xl) + var(--mobile-page-pad-bottom, 0px));
+    padding-bottom: var(--space-xl);
   }
 
   html.mobile-view .footer__about {
