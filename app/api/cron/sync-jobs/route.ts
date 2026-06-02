@@ -1,13 +1,16 @@
 /**
  * /api/cron/sync-jobs
  *
- * Called by Vercel Cron every 5 minutes.
- * Fetches all open jobs from Bullhorn, deduplicates, formats descriptions,
- * and upserts into Supabase. Visitors read from Supabase — no Bullhorn
- * latency on any page load.
+ * Syncs open Bullhorn jobs → Supabase (dedupe, format descriptions, remove closed).
+ * Visitors always read from Supabase — no Bullhorn latency on page loads.
  *
- * Security: Vercel Cron automatically sends an Authorization header with the
- * CRON_SECRET. Set CRON_SECRET in your Vercel environment variables.
+ * Triggers (pick one or both):
+ *  1. Vercel Cron — Hobby plan: once daily at 09:00 UTC (see vercel.json).
+ *     Pro plan: change schedule to every 5 minutes (cron: star-slash-5 * * * *).
+ *  2. n8n (or any scheduler) — GET this URL every 5–15 min with:
+ *       Authorization: Bearer <CRON_SECRET>
+ *
+ * Set CRON_SECRET in Vercel env vars. Vercel Cron sends the same header automatically.
  */
 
 import { NextRequest, NextResponse } from "next/server";
