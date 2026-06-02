@@ -26,7 +26,6 @@ function formatDate(ts?: number | null) {
 
 function formatLocationDisplay(location?: string | null): string {
   if (!location) return "";
-  // Bullhorn sometimes stores verbose strings — show a readable slice on cards
   const cleaned = location.replace(/^\*+\s*/, "").trim();
   if (cleaned.length <= 48) return cleaned;
   return cleaned.slice(0, 45).trim() + "…";
@@ -49,25 +48,21 @@ export function JobBoard({ jobs }: Props) {
   const [locationFilter, setLocationFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
 
-  // ── Restore scroll position when returning from a job detail page ──────────
   useEffect(() => {
     const saved = sessionStorage.getItem(SCROLL_KEY);
     if (saved) {
       const y = parseInt(saved, 10);
-      // Small delay to let the page fully render before scrolling
       requestAnimationFrame(() => {
-        requestAnimationFrame(() => window.scrollTo({ top: y, behavior: "instant" }));
+        window.scrollTo({ top: y, behavior: "auto" });
       });
       sessionStorage.removeItem(SCROLL_KEY);
     }
   }, []);
 
-  // Save scroll position when clicking a job link
   const saveScroll = useCallback(() => {
     sessionStorage.setItem(SCROLL_KEY, String(window.scrollY));
   }, []);
 
-  // ── Filters ────────────────────────────────────────────────────────────────
   const employmentTypes = useMemo(() => {
     const types = new Set(jobs.map((j) => j.employment_type).filter(Boolean));
     return ["All", ...Array.from(types)] as string[];
@@ -78,7 +73,6 @@ export function JobBoard({ jobs }: Props) {
     for (const j of jobs) {
       if (j.location) counts.set(j.location, (counts.get(j.location) ?? 0) + 1);
     }
-    // Cap at 25 locations so mobile select stays usable
     const top = [...counts.entries()]
       .sort((a, b) => b[1] - a[1])
       .slice(0, 25)
@@ -102,7 +96,6 @@ export function JobBoard({ jobs }: Props) {
     });
   }, [jobs, search, typeFilter, locationFilter]);
 
-  // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [search, typeFilter, locationFilter]);
@@ -121,12 +114,11 @@ export function JobBoard({ jobs }: Props) {
 
   const goTo = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   return (
     <div className="job-board">
-      {/* ── Filters ── */}
       <div className="job-board__filters">
         <div className="job-board__search-wrap">
           <svg className="job-board__search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -140,6 +132,7 @@ export function JobBoard({ jobs }: Props) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             aria-label="Search jobs"
+            enterKeyHint="search"
           />
         </div>
 
@@ -166,7 +159,6 @@ export function JobBoard({ jobs }: Props) {
         </p>
       </div>
 
-      {/* ── No results ── */}
       {filtered.length === 0 ? (
         <div className="job-board__no-results">
           <p>No roles match your filters.</p>
@@ -187,90 +179,71 @@ export function JobBoard({ jobs }: Props) {
                 .replace(/\s\S*$/, "") + ((job.description?.length ?? 0) > 160 ? "…" : "");
 
               return (
-                <li key={job.id} className="job-card">
-                  <div className="job-card__header">
-                    <div className="job-card__meta-left">
-                      <h2 className="job-card__title">
-                        <Link
-                          href={`/jobs/${job.id}`}
-                          className="job-card__title-link"
-                          onClick={saveScroll}
-                        >
-                          {job.title}
-                        </Link>
-                      </h2>
-                      <div className="job-card__tags">
-                        {job.category && (
-                          <span className="job-card__tag job-card__tag--cat">{job.category}</span>
-                        )}
-                        {job.employment_type && (
-                          <span className="job-card__tag job-card__tag--type">{job.employment_type}</span>
-                        )}
-                        {workStyle && (
-                          <span className="job-card__tag job-card__tag--mode">{workStyle}</span>
-                        )}
-                      {job.location && (
-                        <span className="job-card__tag job-card__tag--loc" title={job.location}>
-                          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                            <circle cx="12" cy="10" r="3" />
-                          </svg>
-                          {formatLocationDisplay(job.location)}
-                        </span>
-                      )}
+                <li key={job.id}>
+                  <Link
+                    href={`/jobs/${job.id}`}
+                    className="job-card job-card--link"
+                    onClick={saveScroll}
+                    aria-label={`View job: ${job.title}`}
+                  >
+                    <div className="job-card__header">
+                      <div className="job-card__meta-left">
+                        <h2 className="job-card__title">{job.title}</h2>
+                        <div className="job-card__tags">
+                          {job.category && (
+                            <span className="job-card__tag job-card__tag--cat">{job.category}</span>
+                          )}
+                          {job.employment_type && (
+                            <span className="job-card__tag job-card__tag--type">{job.employment_type}</span>
+                          )}
+                          {workStyle && (
+                            <span className="job-card__tag job-card__tag--mode">{workStyle}</span>
+                          )}
+                          {job.location && (
+                            <span className="job-card__tag job-card__tag--loc" title={job.location}>
+                              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+                                <circle cx="12" cy="10" r="3" />
+                              </svg>
+                              {formatLocationDisplay(job.location)}
+                            </span>
+                          )}
+                        </div>
+                        {preview && <p className="job-card__preview">{preview}</p>}
                       </div>
-                      {preview && <p className="job-card__preview">{preview}</p>}
-                    </div>
 
-                    <div className="job-card__meta-right">
-                      {job.date_added && (
-                        <span className="job-card__date">{formatDate(job.date_added)}</span>
-                      )}
-                      <Link
-                        href={`/jobs/${job.id}`}
-                        className="btn btn--ghost btn--sm job-card__cta"
-                        aria-label={`View ${job.title}`}
-                        onClick={saveScroll}
-                      >
-                        View Role
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                          <path d="M5 12h14M12 5l7 7-7 7" />
-                        </svg>
-                      </Link>
+                      <div className="job-card__meta-right">
+                        {job.date_added && (
+                          <span className="job-card__date">{formatDate(job.date_added)}</span>
+                        )}
+                        <span className="job-card__cta">
+                          View Role
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M5 12h14M12 5l7 7-7 7" />
+                          </svg>
+                        </span>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                 </li>
               );
             })}
           </ul>
 
-          {/* ── Pagination ── */}
           {totalPages > 1 && (
             <div className="job-board__pagination">
               <Pagination>
                 <PaginationContent>
-                  {/* Prev */}
                   <PaginationItem>
-                    <button
-                      type="button"
-                      className="job-board__pg-btn"
-                      onClick={() => goTo(currentPage - 1)}
-                      disabled={currentPage === 1}
-                      aria-label="Previous page"
-                    >
-                      ←
-                    </button>
+                    <button type="button" className="job-board__pg-btn" onClick={() => goTo(currentPage - 1)} disabled={currentPage === 1} aria-label="Previous page">←</button>
                   </PaginationItem>
 
-                  {/* First + left ellipsis */}
                   {showLeftEllipsis && (
                     <>
                       <PaginationItem>
                         <button type="button" className="job-board__pg-btn" onClick={() => goTo(1)} aria-label="Page 1">1</button>
                       </PaginationItem>
-                      <PaginationItem>
-                        <PaginationEllipsis />
-                      </PaginationItem>
+                      <PaginationItem><PaginationEllipsis /></PaginationItem>
                     </>
                   )}
 
@@ -290,28 +263,15 @@ export function JobBoard({ jobs }: Props) {
 
                   {showRightEllipsis && (
                     <>
+                      <PaginationItem><PaginationEllipsis /></PaginationItem>
                       <PaginationItem>
-                        <PaginationEllipsis />
-                      </PaginationItem>
-                      <PaginationItem>
-                        <button type="button" className="job-board__pg-btn" onClick={() => goTo(totalPages)} aria-label={`Page ${totalPages}`}>
-                          {totalPages}
-                        </button>
+                        <button type="button" className="job-board__pg-btn" onClick={() => goTo(totalPages)} aria-label={`Page ${totalPages}`}>{totalPages}</button>
                       </PaginationItem>
                     </>
                   )}
 
-                  {/* Next */}
                   <PaginationItem>
-                    <button
-                      type="button"
-                      className="job-board__pg-btn"
-                      onClick={() => goTo(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                      aria-label="Next page"
-                    >
-                      →
-                    </button>
+                    <button type="button" className="job-board__pg-btn" onClick={() => goTo(currentPage + 1)} disabled={currentPage === totalPages} aria-label="Next page">→</button>
                   </PaginationItem>
                 </PaginationContent>
               </Pagination>

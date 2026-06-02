@@ -37,14 +37,23 @@ export function Navbar() {
       ticking = true;
       requestAnimationFrame(() => {
         const y = window.scrollY;
-        setScrolled(y > 10);
-        setPilled(y > window.innerHeight * 0.10);
+        const isMobile = window.innerWidth <= 768;
 
-        if (y > window.innerHeight) {
-          setHidden(y > prevY);
-        } else {
+        setScrolled(y > 10);
+
+        // Pill + hide-on-scroll only on desktop — avoids mobile nav/tap issues
+        if (isMobile) {
+          setPilled(false);
           setHidden(false);
+        } else {
+          setPilled(y > window.innerHeight * 0.10);
+          if (y > window.innerHeight) {
+            setHidden(y > prevY);
+          } else {
+            setHidden(false);
+          }
         }
+
         prevY = y;
         ticking = false;
       });
@@ -53,6 +62,18 @@ export function Navbar() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Lock body scroll when mobile drawer is open
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -83,10 +104,61 @@ export function Navbar() {
       {mobileOpen && (
         <button
           type="button"
-          className="navbar__popover-backdrop"
+          className="navbar__drawer-backdrop"
           aria-label="Close menu"
           onClick={() => setMobileOpen(false)}
         />
+      )}
+
+      {mobileOpen && (
+        <nav className="navbar__drawer" id="nav-popover" aria-label="Mobile navigation">
+          <div className="navbar__drawer-header">
+            <span className="navbar__drawer-title">Menu</span>
+            <button
+              type="button"
+              className="navbar__drawer-close"
+              aria-label="Close menu"
+              onClick={() => setMobileOpen(false)}
+            >
+              ✕
+            </button>
+          </div>
+
+          <ul className="navbar__drawer-list">
+            <li>
+              <Link href="/work-with-us" className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>
+                Work With Us
+              </Link>
+            </li>
+
+            <li className="navbar__drawer-group">
+              <span className="navbar__drawer-label">Services</span>
+              <ul className="navbar__drawer-sublist">
+                {SERVICES.map(([title]) => (
+                  <li key={title}>
+                    <Link href="/services" className="navbar__drawer-sublink" onClick={() => setMobileOpen(false)}>
+                      {title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
+
+            {PLAIN_LINKS.slice(1).map(({ label, href }) => (
+              <li key={href}>
+                <Link href={href} className="navbar__drawer-link" onClick={() => setMobileOpen(false)}>
+                  {label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+
+          <div className="navbar__drawer-cta">
+            <Link href="/contact" className="btn btn--primary btn--sm" onClick={() => setMobileOpen(false)}>
+              Schedule a Consultation
+            </Link>
+          </div>
+        </nav>
       )}
 
       <header className={cls} id="navbar">
@@ -134,39 +206,6 @@ export function Navbar() {
                   <path className="navbar__mobile-icon-line navbar__mobile-icon-line--bot" d="M4 12H20" />
                 </svg>
               </button>
-              <div className="navbar__popover" id="nav-popover" hidden={!mobileOpen}>
-                <nav className="navbar__popover-nav" aria-label="Mobile navigation">
-                  <ul className="navbar__popover-list">
-                    {/* Work With Us */}
-                    <li>
-                      <Link href="/work-with-us" className="navbar__popover-link" onClick={() => setMobileOpen(false)}>Work With Us</Link>
-                    </li>
-                    <li className="navbar__popover-separator" role="separator" />
-                    {/* Services with sub-items */}
-                    <li className="navbar__popover-group">
-                      <span className="navbar__popover-label">Services</span>
-                      <ul className="navbar__popover-sublist">
-                        {SERVICES.map(([title]) => (
-                          <li key={title}>
-                            <Link href="/services" className="navbar__popover-link" onClick={() => setMobileOpen(false)}>
-                              {title}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </li>
-                    <li className="navbar__popover-separator" role="separator" />
-                    {/* Remaining plain links */}
-                    {PLAIN_LINKS.slice(1).map(({ label, href }) => (
-                      <li key={href}>
-                        <Link href={href} className="navbar__popover-link" onClick={() => setMobileOpen(false)}>
-                          {label}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                </nav>
-              </div>
             </div>
 
             {/* Logo mark (always visible) + wordmark text (fades out in pill) */}

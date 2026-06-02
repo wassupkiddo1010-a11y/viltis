@@ -607,6 +607,7 @@ footer {
 
 .navbar--hidden {
   transform: translateY(-120%);
+  pointer-events: none;
 }
 
 .navbar--pill {
@@ -1099,6 +1100,134 @@ footer {
 
 .navbar__popover-backdrop[hidden] {
   display: none;
+}
+
+/* ── Mobile full-screen drawer (replaces tiny popover) ── */
+.navbar__drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  background: rgba(0, 0, 0, 0.55);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.navbar__drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1110;
+  width: min(100%, 22rem);
+  display: flex;
+  flex-direction: column;
+  background: #080d18;
+  border-left: 1px solid var(--border-strong);
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.45);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+}
+
+.navbar__drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.navbar__drawer-title {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.navbar__drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.25rem;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.navbar__drawer-list {
+  list-style: none;
+  margin: 0;
+  padding: 0.75rem 0;
+  flex: 1;
+}
+
+.navbar__drawer-link {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0.75rem 1.25rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-main);
+  text-decoration: none;
+  touch-action: manipulation;
+}
+
+.navbar__drawer-link:active {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.navbar__drawer-group {
+  padding: 0.5rem 0;
+}
+
+.navbar__drawer-label {
+  display: block;
+  padding: 0.5rem 1.25rem 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.navbar__drawer-sublist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar__drawer-sublink {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0.5rem 1.25rem 0.5rem 1.75rem;
+  font-size: 0.9375rem;
+  color: var(--text-muted);
+  text-decoration: none;
+  touch-action: manipulation;
+}
+
+.navbar__drawer-sublink:active {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+}
+
+.navbar__drawer-cta {
+  padding: 1rem 1.25rem calc(1rem + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.navbar__drawer-cta .btn {
+  width: 100%;
+  min-height: 48px;
 }
 
 /* ========================================
@@ -2731,7 +2860,25 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 
-.job-card:hover {
+.job-card--link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(32, 199, 181, 0.15);
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
+.job-card--link:active {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(32, 199, 181, 0.35);
+}
+
+.job-card:hover,
+.job-card--link:hover {
   border-color: var(--border-strong);
   background: rgba(255, 255, 255, 0.04);
 }
@@ -2840,6 +2987,9 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
   align-items: center;
   gap: 0.4em;
   white-space: nowrap;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--teal);
 }
 
 /* ── Responsive ── */
@@ -3292,6 +3442,13 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
   opacity: 0.5;
 }
 
+@media (min-width: 769px) {
+  .navbar__drawer,
+  .navbar__drawer-backdrop {
+    display: none !important;
+  }
+}
+
 @media (min-width: 768px) {
   /* Show desktop nav, hide mobile burger */
   .navbar__nav {
@@ -3349,20 +3506,26 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
     --navbar-height: 4rem;
   }
 
-  /* Performance: disable expensive effects on touch devices */
+  /* Performance: disable expensive GPU effects on touch devices */
   .global-loom-bg {
     display: none !important;
   }
 
+  .navbar,
+  .navbar__popover,
+  .navbar__base-popup,
+  .section,
+  .footer,
+  .cta-section {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+  }
+
   .navbar {
-    backdrop-filter: blur(8px);
+    background-color: rgba(5, 7, 13, 0.97) !important;
   }
 
-  .navbar__popover {
-    backdrop-filter: blur(8px);
-  }
-
-  /* Jobs page — tighter hero, stronger card contrast */
+  /* Jobs page — tighter hero, opaque cards (fixes Android GPU text corruption) */
   .jobs-hero {
     padding: clamp(1.75rem, 6vw, 2.5rem) var(--container-padding) clamp(1.5rem, 4vw, 2rem);
   }
@@ -3381,9 +3544,12 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
     min-height: 44px;
   }
 
-  .job-card {
-    background: rgba(255, 255, 255, 0.06);
-    border-color: var(--border-strong);
+  .job-card,
+  .job-card--link {
+    background: #0c1019;
+    border-color: rgba(255, 255, 255, 0.14);
+    transform: none;
+    will-change: auto;
   }
 
   .job-card__title {
@@ -4043,6 +4209,34 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
 }
 
 /* ── Performance & accessibility ─────────────────────────────────────────── */
+html.perf-reduced .global-loom-bg,
+html.perf-reduced .digital-loom-background,
+html.perf-reduced .hero__loom {
+  display: none !important;
+}
+
+html.perf-reduced *,
+html.perf-reduced *::before,
+html.perf-reduced *::after {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+html.perf-reduced .tm-track {
+  animation: none !important;
+}
+
+html.perf-reduced .black-wipe {
+  display: none !important;
+}
+
+html.perf-reduced .job-card,
+html.perf-reduced .job-card--link {
+  background: #0c1019;
+  transform: none;
+  will-change: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -4058,16 +4252,8 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
   .hero__loom {
     display: none !important;
   }
-}
 
-@media (min-width: 769px) {
-  .jobs-board-section,
-  .vwqf-section,
-  .cs-section,
-  section.testimonials,
-  .cta-section,
-  .footer {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 600px;
+  .tm-track {
+    animation: none !important;
   }
 }

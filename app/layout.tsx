@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
+import { PerformanceMode } from "@/components/site/performance-mode";
 
 export const metadata: Metadata = {
   title: "Viltis | Life Sciences Consulting & Expert Resourcing",
@@ -20,7 +21,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://cdn.jsdelivr.net" crossOrigin="" />
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="" />
       </head>
-      <body suppressHydrationWarning>{children}</body>
+      <body suppressHydrationWarning>
+        <PerformanceMode />
+        {children}
+      </body>
     </html>
   );
 }
