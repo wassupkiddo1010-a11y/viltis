@@ -29,6 +29,26 @@ html.mobile-view {
 
 /* ── Hero: full-width touch targets ──────────────────────────────────────── */
 @media (max-width: 768px) {
+  html.mobile-view .transition-section__panel {
+    overflow-x: visible;
+  }
+
+  html.mobile-view .industry-showcase {
+    overflow: visible;
+  }
+
+  html.mobile-view .industry-showcase__inner {
+    padding-inline: 0;
+  }
+
+  html.mobile-view .industry-showcase__header {
+    padding-inline: var(--container-padding);
+  }
+
+  html.mobile-view .industry-showcase__deck {
+    scroll-padding-inline: var(--container-padding);
+  }
+
   html.mobile-view .hero__actions {
     flex-direction: column;
     align-items: stretch;
@@ -88,13 +108,22 @@ html.mobile-view {
   }
 
   html.mobile-view .cs-carousel {
-    height: clamp(440px, 62vh, 520px);
-    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
-    mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+    height: auto;
+    min-height: clamp(400px, 58vh, 520px);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%);
+    touch-action: none;
   }
 
   html.mobile-view .cs-track {
-    gap: 28px;
+    gap: var(--cs-gap, 20px);
+  }
+
+  html.mobile-view .cs-card,
+  html.mobile-view .cs-ghost {
+    width: var(--cs-card-w, min(88vw, 340px)) !important;
+    height: var(--cs-card-h, auto) !important;
+    max-width: calc(100vw - 2.5rem);
   }
 
   html.mobile-view .cs-card {
@@ -127,13 +156,19 @@ html.mobile-view {
   html.mobile-view .cs-dot {
     min-width: 10px;
     min-height: 10px;
-    padding: 6px;
+    padding: 8px;
+    background-clip: content-box;
+  }
+
+  html.mobile-view .cs-dot--active {
+    background: #111;
+    background-clip: content-box;
   }
 }
 
 @media (max-width: 480px) {
   html.mobile-view .cs-carousel {
-    height: clamp(400px, 58vh, 480px);
+    min-height: clamp(380px, 55vh, 460px);
   }
 }
 
