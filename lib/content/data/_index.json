@@ -1,0 +1,330 @@
+[
+  {
+    "key": "work-with-us",
+    "ok": true
+  },
+  {
+    "key": "about",
+    "ok": true
+  },
+  {
+    "key": "contact",
+    "ok": true
+  },
+  {
+    "key": "case-studies",
+    "ok": true
+  },
+  {
+    "key": "blog",
+    "ok": true
+  },
+  {
+    "key": "services",
+    "ok": true
+  },
+  {
+    "key": "services-quality",
+    "ok": true
+  },
+  {
+    "key": "services-clinical",
+    "ok": true
+  },
+  {
+    "key": "services-regulatory",
+    "ok": true
+  },
+  {
+    "key": "services-engineering",
+    "ok": true
+  },
+  {
+    "key": "services-scientific",
+    "ok": true
+  },
+  {
+    "key": "services-pharmacovigilance",
+    "ok": true
+  },
+  {
+    "key": "quality-gxp-compliance-auditing",
+    "ok": true
+  },
+  {
+    "key": "quality-inspection-readiness-quality",
+    "ok": true
+  },
+  {
+    "key": "quality-computer-system-validation-csv",
+    "ok": true
+  },
+  {
+    "key": "quality-commissioning-qualification-validation-cqv",
+    "ok": true
+  },
+  {
+    "key": "quality-clinical-quality-assurance-cqa",
+    "ok": true
+  },
+  {
+    "key": "quality-data-integrity-alcoa-compliance",
+    "ok": true
+  },
+  {
+    "key": "quality-qa-for-digital-systems-emerging-technologies",
+    "ok": true
+  },
+  {
+    "key": "clinical-pharmaceutical",
+    "ok": true
+  },
+  {
+    "key": "clinical-medical-devices",
+    "ok": true
+  },
+  {
+    "key": "clinical-biologics",
+    "ok": true
+  },
+  {
+    "key": "clinical-full-service-cro",
+    "ok": true
+  },
+  {
+    "key": "clinical-decentralized-clinical-trials",
+    "ok": true
+  },
+  {
+    "key": "clinical-embedded-clinical-solutions",
+    "ok": true
+  },
+  {
+    "key": "clinical-biostatistics-programming",
+    "ok": true
+  },
+  {
+    "key": "clinical-medical-writing-transparency",
+    "ok": true
+  },
+  {
+    "key": "clinical-clinical-operations-management",
+    "ok": true
+  },
+  {
+    "key": "clinical-study-startup-site-activation",
+    "ok": true
+  },
+  {
+    "key": "clinical-clinical-data-management",
+    "ok": true
+  },
+  {
+    "key": "clinical-real-world-evidence-rwe",
+    "ok": true
+  },
+  {
+    "key": "regulatory-fda-regulatory-strategy-and-consulting",
+    "ok": true
+  },
+  {
+    "key": "regulatory-fda-meeting-consulting-services",
+    "ok": true
+  },
+  {
+    "key": "regulatory-regulatory-operations",
+    "ok": true
+  },
+  {
+    "key": "regulatory-market-access-reimbursement-strategy",
+    "ok": true
+  },
+  {
+    "key": "regulatory-advertising-promotional-review-opdp",
+    "ok": true
+  },
+  {
+    "key": "regulatory-regulatory-intelligence-guidance-monitoring",
+    "ok": true
+  },
+  {
+    "key": "regulatory-fda-inspection-readiness",
+    "ok": true
+  },
+  {
+    "key": "regulatory-post-approval-regulatory-maintenance",
+    "ok": true
+  },
+  {
+    "key": "regulatory-eu-mdr-medical-device-regulation",
+    "ok": true
+  },
+  {
+    "key": "regulatory-eu-ivdr-in-vitro-diagnostic-regulation",
+    "ok": true
+  },
+  {
+    "key": "regulatory-global-regulatory-considerations",
+    "ok": false
+  },
+  {
+    "key": "engineering-commissioning-qualification-validation-cqv",
+    "ok": true
+  },
+  {
+    "key": "engineering-facilities-equipment-qualification",
+    "ok": true
+  },
+  {
+    "key": "engineering-manufacturing-readiness-technical-transfer",
+    "ok": true
+  },
+  {
+    "key": "engineering-engineering-change-control-lifecycle-management",
+    "ok": true
+  },
+  {
+    "key": "engineering-utilities-cleanroom-systems-qualification",
+    "ok": true
+  },
+  {
+    "key": "engineering-process-engineering-scale-up-support",
+    "ok": true
+  },
+  {
+    "key": "engineering-automation-control-systems-gxp",
+    "ok": true
+  },
+  {
+    "key": "engineering-equipment-reliability-preventive-maintenance",
+    "ok": true
+  },
+  {
+    "key": "scientific-nonclinical-development",
+    "ok": true
+  },
+  {
+    "key": "scientific-translational-science",
+    "ok": true
+  },
+  {
+    "key": "scientific-scientific-technical-consulting",
+    "ok": true
+  },
+  {
+    "key": "scientific-bioanalytical-sciences",
+    "ok": true
+  },
+  {
+    "key": "scientific-chemistry-manufacturing-controls-cmc",
+    "ok": false
+  },
+  {
+    "key": "scientific-nonclinical-toxicology-strategy",
+    "ok": true
+  },
+  {
+    "key": "scientific-biomarker-development-validation",
+    "ok": true
+  },
+  {
+    "key": "scientific-scientific-due-diligence-program-assessment",
+    "ok": true
+  },
+  {
+    "key": "pv-adverse-event-reporting",
+    "ok": false
+  },
+  {
+    "key": "pv-comprehensive-icsr-management",
+    "ok": false
+  },
+  {
+    "key": "pv-proactive-signal-detection-risk-management",
+    "ok": false
+  },
+  {
+    "key": "pv-pharmacovigilance-gap-analysis",
+    "ok": false
+  },
+  {
+    "key": "pv-post-market-surveillance",
+    "ok": false
+  },
+  {
+    "key": "pv-literature-surveillance",
+    "ok": false
+  },
+  {
+    "key": "pv-preparing-pharmacovigilance-audits",
+    "ok": false
+  },
+  {
+    "key": "pv-internal-pharmacovigilance-audits",
+    "ok": false
+  },
+  {
+    "key": "pv-role-of-qppv",
+    "ok": false
+  },
+  {
+    "key": "pv-european-pharmacovigilance-standards-qppv",
+    "ok": false
+  },
+  {
+    "key": "pv-observational-studies-real-world-evidence",
+    "ok": false
+  },
+  {
+    "key": "cs-biologics-cmc-analytical",
+    "ok": true
+  },
+  {
+    "key": "cs-manufacturing-quality",
+    "ok": true
+  },
+  {
+    "key": "cs-biologics-cmc-pip",
+    "ok": true
+  },
+  {
+    "key": "cs-phase-iii-scd",
+    "ok": true
+  },
+  {
+    "key": "cs-dhf-remediation",
+    "ok": true
+  },
+  {
+    "key": "cs-abbott-cardiovascular",
+    "ok": true
+  },
+  {
+    "key": "cs-abbott-cardiovascular-2",
+    "ok": true
+  },
+  {
+    "key": "blog-contract-consulting",
+    "ok": true
+  },
+  {
+    "key": "blog-483-warning",
+    "ok": true
+  },
+  {
+    "key": "blog-3d-printing",
+    "ok": true
+  },
+  {
+    "key": "blog-compounding",
+    "ok": true
+  },
+  {
+    "key": "blog-fda-devices",
+    "ok": true
+  },
+  {
+    "key": "blog-pharmacovigilance",
+    "ok": true
+  }
+]

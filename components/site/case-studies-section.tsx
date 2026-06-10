@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState, useRef, useEffect, useCallback } from "react";
 import {
   motion,
@@ -382,13 +383,13 @@ export function CaseStudiesSection() {
           completion. Successful timeline management ensures objectives are met
           within budget consideration.
         </p>
-        <button className="cs-explore-btn" type="button">
+        <Link href="/case-studies" className="cs-explore-btn">
           <span className="cs-ebracket cs-ebracket--tl" />
           <span className="cs-ebracket cs-ebracket--tr" />
           <span className="cs-ebracket cs-ebracket--bl" />
           <span className="cs-ebracket cs-ebracket--br" />
           Explore Case Studies
-        </button>
+        </Link>
       </div>
 
       {/* ── Carousel ──────────────────────────────────────────────── */}

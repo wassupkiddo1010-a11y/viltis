@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { TestimonialsColumns } from "@/components/ui/testimonials-columns-1";
 
 export function ContactSection() {
@@ -23,9 +24,9 @@ export function ContactSection() {
             pharmacovigilance needs.
           </p>
           <div className="cta-section__actions">
-            <a href="mailto:info@viltis.com" className="btn btn--primary">
+            <Link href="/schedule-a-call" className="btn btn--primary">
               Schedule a Consultation
-            </a>
+            </Link>
             <a href="mailto:info@viltis.com" className="btn btn--secondary">
               Request Consultant Support
             </a>

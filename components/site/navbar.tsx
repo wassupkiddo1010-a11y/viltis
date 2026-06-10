@@ -7,18 +7,19 @@ import { NavigationMenu } from "@base-ui-components/react/navigation-menu";
 import { MOBILE_MAX } from "@/lib/breakpoints";
 
 const SERVICES = [
-  ["Quality",           "GMP quality systems and audit readiness."],
-  ["Regulatory",        "Submission strategy and agency support."],
-  ["Clinical",          "Trial operations and clinical data management."],
-  ["Engineering",       "Process engineering and manufacturing support."],
-  ["Scientific",        "Analytical development and CMC strategy."],
-  ["Pharmacovigilance", "Safety case processing and reporting."],
+  { title: "Quality",           href: "/services/quality",           desc: "GMP quality systems and audit readiness." },
+  { title: "Regulatory",        href: "/services/regulatory",        desc: "Submission strategy and agency support." },
+  { title: "Clinical",          href: "/services/clinical",          desc: "Trial operations and clinical data management." },
+  { title: "Engineering",       href: "/services/engineering",       desc: "Process engineering and manufacturing support." },
+  { title: "Scientific",        href: "/services/scientific",        desc: "Analytical development and CMC strategy." },
+  { title: "Pharmacovigilance", href: "/services/pharmacovigilance", desc: "Safety case processing and reporting." },
 ] as const;
 
 const PLAIN_LINKS = [
   { label: "Work With Us", href: "/work-with-us" },
   { label: "Case Studies", href: "/case-studies"  },
   { label: "About",        href: "/about"         },
+  { label: "Blog",         href: "/blog"          },
   { label: "Jobs",         href: "/jobs"          },
   { label: "Contact",      href: "/contact"       },
 ] as const;
@@ -42,7 +43,6 @@ export function Navbar() {
 
         setScrolled(y > 10);
 
-        // Pill + hide-on-scroll only on desktop — avoids mobile nav/tap issues
         if (isMobile) {
           setPilled(false);
           setHidden(false);
@@ -64,7 +64,6 @@ export function Navbar() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Lock body scroll when mobile drawer is open
   useEffect(() => {
     if (mobileOpen) {
       document.body.style.overflow = "hidden";
@@ -133,11 +132,22 @@ export function Navbar() {
             </li>
 
             <li className="navbar__drawer-group">
-              <span className="navbar__drawer-label">Services</span>
+              <Link
+                href="/services"
+                className="navbar__drawer-label navbar__drawer-label--link"
+                onClick={() => setMobileOpen(false)}
+              >
+                Services
+              </Link>
               <ul className="navbar__drawer-sublist">
-                {SERVICES.map(([title]) => (
+                <li>
+                  <Link href="/services" className="navbar__drawer-sublink" onClick={() => setMobileOpen(false)}>
+                    All Services
+                  </Link>
+                </li>
+                {SERVICES.map(({ title, href }) => (
                   <li key={title}>
-                    <Link href="/services" className="navbar__drawer-sublink" onClick={() => setMobileOpen(false)}>
+                    <Link href={href} className="navbar__drawer-sublink" onClick={() => setMobileOpen(false)}>
                       {title}
                     </Link>
                   </li>
@@ -155,7 +165,7 @@ export function Navbar() {
           </ul>
 
           <div className="navbar__drawer-cta">
-            <Link href="/contact" className="btn btn--primary btn--sm" onClick={() => setMobileOpen(false)}>
+            <Link href="/schedule-a-call" className="btn btn--primary btn--sm" onClick={() => setMobileOpen(false)}>
               Schedule a Consultation
             </Link>
           </div>
@@ -163,24 +173,8 @@ export function Navbar() {
       )}
 
       <header className={cls} id="navbar">
-        {/*
-         * navbar__inner is the element that morphs into the pill.
-         * In State A it spans full page width (no `container` class so we
-         * control padding here).
-         * In State B (.navbar--pill) its CSS shrinks it to fit-content
-         * and centres it.
-         *
-         * THREE flex children — brand / nav / actions — so space-between
-         * gives:  [BRAND]  ···  [NAV LINKS]  ···  [CTA]
-         * In pill mode .navbar__actions is hidden, leaving:
-         *   [logo glyph]  [nav links]  — packed tightly side-by-side.
-         */}
         <div className="navbar__inner">
-
-          {/* ── Brand / Logo ────────────────────────────────── */}
           <div className="navbar__brand">
-
-            {/* Mobile hamburger */}
             <div className="navbar__mobile">
               <button
                 type="button"
@@ -209,7 +203,6 @@ export function Navbar() {
               </button>
             </div>
 
-            {/* Logo mark (always visible) + wordmark text (fades out in pill) */}
             <Link href="/" className="navbar__logo" aria-label="Viltis home">
               <Image
                 src="/assets/viltis-logo.png"
@@ -219,17 +212,17 @@ export function Navbar() {
                 height={47}
                 priority
               />
-              {/* Wordmark — State A only; cross-fades out when pill activates */}
-              <span className="navbar__wordmark" aria-hidden="true">Viltis</span>
+              <span className="navbar__wordmark">Viltis</span>
             </Link>
           </div>
 
-          {/* ── Desktop nav ── */}
           <nav className="navbar__nav" aria-label="Main navigation">
-            <NavigationMenu.Root className="navbar__menu-root">
+            <NavigationMenu.Root
+              className="navbar__menu-root"
+              delay={0}
+              closeDelay={300}
+            >
               <NavigationMenu.List className="navbar__menu">
-
-                {/* Work With Us — plain */}
                 <NavigationMenu.Item className="navbar__menu-item">
                   <NavigationMenu.Link render={<Link href="/work-with-us" />} className="navbar__link">
                     <span className="navbar__roll-text" aria-hidden="true"><span>Work With Us</span><span>Work With Us</span></span>
@@ -237,9 +230,11 @@ export function Navbar() {
                   </NavigationMenu.Link>
                 </NavigationMenu.Item>
 
-                {/* Services — dropdown */}
-                <NavigationMenu.Item className="navbar__menu-item">
-                  <NavigationMenu.Trigger className="navbar__trigger">
+                <NavigationMenu.Item
+                  value="services"
+                  className="navbar__menu-item navbar__menu-item--services"
+                >
+                  <NavigationMenu.Trigger className="navbar__trigger navbar__trigger--services">
                     <span className="navbar__roll-text" aria-hidden="true">
                       <span>Services</span>
                       <span>Services</span>
@@ -254,9 +249,15 @@ export function Navbar() {
 
                   <NavigationMenu.Content className="navbar__base-content">
                     <ul className="navbar__panel navbar__panel--desc">
-                      {SERVICES.map(([title, desc]) => (
+                      <li>
+                        <NavigationMenu.Link render={<Link href="/services" />} className="navbar__panel-link">
+                          <span className="navbar__panel-title">All Services</span>
+                          <span className="navbar__panel-desc">Browse our full capabilities</span>
+                        </NavigationMenu.Link>
+                      </li>
+                      {SERVICES.map(({ title, href, desc }) => (
                         <li key={title}>
-                          <NavigationMenu.Link render={<Link href="/services" />} className="navbar__panel-link">
+                          <NavigationMenu.Link render={<Link href={href} />} className="navbar__panel-link">
                             <span className="navbar__panel-title">{title}</span>
                             <span className="navbar__panel-desc">{desc}</span>
                           </NavigationMenu.Link>
@@ -266,7 +267,6 @@ export function Navbar() {
                   </NavigationMenu.Content>
                 </NavigationMenu.Item>
 
-                {/* Remaining plain links */}
                 {PLAIN_LINKS.slice(1).map(({ label, href }) => (
                   <NavigationMenu.Item key={href} className="navbar__menu-item">
                     <NavigationMenu.Link render={<Link href={href} />} className="navbar__link">
@@ -275,12 +275,11 @@ export function Navbar() {
                     </NavigationMenu.Link>
                   </NavigationMenu.Item>
                 ))}
-
               </NavigationMenu.List>
 
               <NavigationMenu.Portal>
                 <NavigationMenu.Positioner
-                  sideOffset={8}
+                  sideOffset={4}
                   collisionPadding={{ top: 5, bottom: 5, left: 16, right: 16 }}
                   className="navbar__base-positioner"
                   style={{
@@ -293,17 +292,14 @@ export function Navbar() {
                   </NavigationMenu.Popup>
                 </NavigationMenu.Positioner>
               </NavigationMenu.Portal>
-
             </NavigationMenu.Root>
           </nav>
 
-          {/* ── CTA — hidden inside pill ──────────────────────── */}
           <div className="navbar__actions">
-            <Link href="/contact" className="btn btn--primary btn--sm navbar__cta">
+            <Link href="/schedule-a-call" className="btn btn--primary btn--sm navbar__cta">
               Schedule a Consultation
             </Link>
           </div>
-
         </div>
       </header>
     </>

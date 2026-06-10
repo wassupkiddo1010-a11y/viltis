@@ -685,20 +685,17 @@ footer {
 .navbar--pill .navbar__logo-mark { height: 1.75rem; }
 
 .navbar__wordmark {
-  font-family: var(--font-mono, ui-monospace, monospace);
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  text-transform: none;
   color: var(--text-main);
   white-space: nowrap;
-  transition: opacity 0.35s ease, transform 0.35s ease;
+  transition: font-size 0.35s ease;
 }
 .navbar--pill .navbar__wordmark {
-  opacity: 0;
-  pointer-events: none;
-  position: absolute;
-  visibility: hidden;
+  font-size: 0.95rem;
 }
 
 .navbar__nav {
@@ -743,6 +740,16 @@ footer {
 }
 
 .navbar__menu-item { position: relative; }
+
+.navbar__trigger--services {
+  gap: 0.2rem;
+}
+
+.navbar__menu-item--services:hover .navbar__chevron-icon,
+.navbar__menu-item--services:focus-within .navbar__chevron-icon,
+.navbar__menu-item--services [data-popup-open] .navbar__chevron-icon {
+  transform: rotate(180deg);
+}
 
 .navbar__trigger,
 .navbar__link {
@@ -828,10 +835,10 @@ footer {
 .navbar__base-positioner::before {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
-  top: -10px;
-  height: 10px;
+  left: -8px;
+  right: -8px;
+  top: -12px;
+  height: 12px;
 }
 
 /* The popup box — dark glass to match the navbar */
@@ -1197,6 +1204,15 @@ footer {
   color: var(--text-soft);
 }
 
+.navbar__drawer-label--link {
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.navbar__drawer-label--link:hover {
+  color: var(--teal);
+}
+
 .navbar__drawer-sublist {
   list-style: none;
   margin: 0;
@@ -1393,7 +1409,7 @@ footer {
   font-weight: 400;
   line-height: 1.7;
   color: rgba(255, 255, 255, 0.62);
-  max-width: 38.75rem;
+  max-width: 42rem;
 }
 
 /* Rotating text — rotating-text.tsx parity (slide mode in hero) */
@@ -3952,9 +3968,11 @@ section.testimonials .tm-header__sub   { color: rgba(14, 17, 23, 0.62); }
 /* Explore button — corner-bracket motif, no full border */
 .cs-explore-btn {
   position: relative;
+  display: inline-block;
   background: none;
   border: none;
   padding: 0.85rem 2rem;
+  text-decoration: none;
   font-family: ui-monospace, "Cascadia Mono", monospace;
   font-size: 0.7rem;
   font-weight: 600;
