@@ -43,10 +43,10 @@ export function Hero() {
             className="hero__actions hero__reveal"
             style={{ "--reveal-delay": "540ms" } as React.CSSProperties}
           >
-            <Link href="#services" className="btn btn--primary">
+            <Link href="/services" className="btn btn--primary">
               Explore Services
             </Link>
-            <Link href="#contact" className="btn btn--outline">
+            <Link href="/schedule-a-call" className="btn btn--outline">
               Schedule a Consultation
             </Link>
           </div>

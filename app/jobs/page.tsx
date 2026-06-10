@@ -3,7 +3,13 @@ import { Footer } from "@/components/site/footer";
 import { JobBoard } from "@/components/site/job-board";
 import { supabase, type JobRow } from "@/lib/supabase";
 
-export const metadata = { title: "Open Positions | Viltis" };
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata = pageMetadata({
+  title: "Open Positions",
+  description: "Explore open positions at Viltis and join our team of life-science specialists.",
+  path: "/jobs",
+});
 
 // ISR: cached for 5 minutes, matches the cron sync interval.
 // The cron also calls revalidatePath("/jobs") so updates appear immediately after a sync.

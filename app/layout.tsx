@@ -2,11 +2,26 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { PerformanceMode } from "@/components/site/performance-mode";
 import { MobileViewRoot } from "@/components/site/mobile-view-root";
+import { OrganizationJsonLd } from "@/components/site/json-ld";
+import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
-  title: "Viltis | Life Sciences Consulting & Expert Resourcing",
-  description:
-    "Viltis provides specialized life sciences consulting and expert resourcing for pharmaceutical, biotech, medical device, and diagnostics companies.",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: SITE_NAME,
+    template: `%s | ${SITE_NAME}`,
+  },
+  description: SITE_DESCRIPTION,
+  applicationName: SITE_NAME,
+  authors: [{ name: SITE_NAME, url: SITE_URL }],
+  creator: SITE_NAME,
+  publisher: SITE_NAME,
+  formatDetection: { email: false, address: false, telephone: false },
+  icons: {
+    icon: [{ url: "/assets/viltis-logo.png", type: "image/png" }],
+    apple: [{ url: "/assets/viltis-logo.png", type: "image/png" }],
+    shortcut: "/assets/viltis-logo.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -24,6 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://images.unsplash.com" crossOrigin="" />
       </head>
       <body suppressHydrationWarning>
+        <OrganizationJsonLd />
         <PerformanceMode />
         <MobileViewRoot />
         {children}

@@ -74,12 +74,13 @@ export function Component({
       <span className="rotating-text__ghost" aria-hidden="true">
         {longestWord}
       </span>
+      <span className="sr-only">{words[index]}</span>
 
       <AnimatePresence mode="wait">
         <motion.span
           key={words[index]}
           className="rotating-text__current"
-          initial={initial}
+          initial={index === 0 ? false : initial}
           animate={animate}
           exit={exit}
           transition={{
