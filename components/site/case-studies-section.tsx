@@ -10,9 +10,27 @@ import {
 } from "framer-motion";
 
 /* ─── Layout constants ──────────────────────────────────────────────────── */
-const CARD_W = 420;
-const CARD_H = 590;
-const GAP = 52;
+const DESKTOP_CARD_W = 420;
+const DESKTOP_CARD_H = 590;
+const DESKTOP_GAP = 52;
+
+interface CarouselMetrics {
+  cardW: number;
+  cardH: number;
+  gap: number;
+}
+
+function getCarouselMetrics(containerWidth: number): CarouselMetrics {
+  if (containerWidth <= 768) {
+    const cardW = Math.min(340, Math.max(280, containerWidth - 40));
+    return {
+      cardW,
+      cardH: Math.round(cardW * (DESKTOP_CARD_H / DESKTOP_CARD_W)),
+      gap: 20,
+    };
+  }
+  return { cardW: DESKTOP_CARD_W, cardH: DESKTOP_CARD_H, gap: DESKTOP_GAP };
+}
 
 /* ─── SVG Glyphs ────────────────────────────────────────────────────────── */
 function GlyphHex({ color }: { color: string }) {
@@ -88,9 +106,9 @@ function GlyphPulse({ color }: { color: string }) {
 /* ─── Card data ─────────────────────────────────────────────────────────── */
 interface CaseCard {
   id: string;
+  slug: string;
   title: string;
   tagline: string;
-  url: string;
   colorFull: string;
   colorMuted: string;
   textColor: string;
@@ -100,9 +118,9 @@ interface CaseCard {
 const CARDS: CaseCard[] = [
   {
     id: "manufacturing",
+    slug: "manufacturing-quality-and-process-team",
     title: "MANUFACTURING QUALITY & PROCESS TEAM",
     tagline: "QUALITY SYSTEMS AND PROCESS\nCAPABILITY FOR REGULATED\nMANUFACTURING",
-    url: "https://viltis.com/case-studies/case-study-manufacturing-quality-and-process-team/",
     colorFull: "#1B3B29",
     colorMuted: "#2E4A3A",
     textColor: "#EDE9E0",
@@ -110,9 +128,9 @@ const CARDS: CaseCard[] = [
   },
   {
     id: "biologics-cmc",
+    slug: "biologics-cmc-pip",
     title: "BIOLOGICS CMC PIP",
     tagline: "CHEMISTRY, MANUFACTURING AND\nCONTROLS FOR A COMPLEX\nBIOLOGICS PIPELINE",
-    url: "https://viltis.com/case-studies/case-study-biologics-cmc-pip/",
     colorFull: "#FBFCB4",
     colorMuted: "#EAEBCF",
     textColor: "#111111",
@@ -120,9 +138,9 @@ const CARDS: CaseCard[] = [
   },
   {
     id: "phase-iii",
+    slug: "phase-iii-biologic-sickle-cell-disease",
     title: "PHASE III BIOLOGIC, SCD",
     tagline: "LATE-STAGE CLINICAL OPERATIONS\nFOR A SICKLE CELL DISEASE\nBIOLOGIC PROGRAM",
-    url: "https://viltis.com/case-studies/phase-iii-biologic-sickle-cell-disease-scd/",
     colorFull: "#ADADE6",
     colorMuted: "#C6C6EC",
     textColor: "#111111",
@@ -130,9 +148,9 @@ const CARDS: CaseCard[] = [
   },
   {
     id: "dhf",
+    slug: "dhf-remediation-class-i-medical-devices",
     title: "DHF REMEDIATION — CLASS I DEVICES",
     tagline: "DESIGN HISTORY FILE REMEDIATION\nSUPPORT FOR CLASS I\nMEDICAL DEVICES",
-    url: "https://viltis.com/case-studies/dhf-remediation-support-for-class-i-medical-devices/",
     colorFull: "#DEFD4B",
     colorMuted: "#DEE0B0",
     textColor: "#111111",
@@ -140,9 +158,9 @@ const CARDS: CaseCard[] = [
   },
   {
     id: "abbott-1",
+    slug: "abbott-cardiovascular-design-development",
     title: "ABBOTT CARDIOVASCULAR — DESIGN & DEV",
     tagline: "DESIGN AND DEVELOPMENT\nSUPPORT FOR ABBOTT'S\nCARDIOVASCULAR DIVISION",
-    url: "https://viltis.com/case-studies/design-and-development-support-for-abbotts-cardiovascular-division/",
     colorFull: "#1B3B29",
     colorMuted: "#2E4A3A",
     textColor: "#EDE9E0",
@@ -150,9 +168,9 @@ const CARDS: CaseCard[] = [
   },
   {
     id: "abbott-2",
+    slug: "abbott-cardiovascular-design-development-ii",
     title: "ABBOTT CARDIOVASCULAR — DESIGN & DEV II",
     tagline: "PHASE II DESIGN AND DEVELOPMENT,\nABBOTT CARDIOVASCULAR\nDIVISION",
-    url: "https://viltis.com/case-studies/design-and-development-support-for-abbotts-cardiovascular-division-1/",
     colorFull: "#FBFCB4",
     colorMuted: "#EAEBCF",
     textColor: "#111111",
@@ -175,21 +193,31 @@ function BracketFrame({ color, inset = 14 }: { color: string; inset?: number }) 
 }
 
 /* ─── Active Card ───────────────────────────────────────────────────────── */
-function ActiveCard({ card }: { card: CaseCard }) {
+function ActiveCard({
+  card,
+  width,
+  height,
+  isCoarse,
+}: {
+  card: CaseCard;
+  width: number;
+  height: number;
+  isCoarse: boolean;
+}) {
   const [hovered, setHovered] = useState(false);
+  const showCta = hovered || isCoarse;
 
   return (
     <div
       className="cs-card"
       style={{
-        width: CARD_W,
-        height: CARD_H,
+        width,
+        height,
         background: hovered ? card.colorFull : card.colorMuted,
         color: card.textColor,
       }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      onTouchStart={() => setHovered(true)}
+      onMouseEnter={() => !isCoarse && setHovered(true)}
+      onMouseLeave={() => !isCoarse && setHovered(false)}
     >
       <BracketFrame color={card.textColor} inset={14} />
 
@@ -211,21 +239,23 @@ function ActiveCard({ card }: { card: CaseCard }) {
       {/* Footer */}
       <div className="cs-card__footer">
         <AnimatePresence mode="wait">
-          {hovered ? (
-            <motion.a
+          {showCta ? (
+            <motion.span
               key="go"
-              href={card.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="cs-card__go-btn"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 8 }}
               transition={{ duration: 0.2 }}
-              onClick={(e) => e.stopPropagation()}
             >
-              GO TO WEBSITE
-            </motion.a>
+              <Link
+                href={`/case-studies/${card.slug}`}
+                className="cs-card__go-btn"
+                onPointerDown={(e) => e.stopPropagation()}
+                onClick={(e) => e.stopPropagation()}
+              >
+                VIEW CASE STUDY
+              </Link>
+            </motion.span>
           ) : (
             <motion.span
               key="label"
@@ -235,7 +265,7 @@ function ActiveCard({ card }: { card: CaseCard }) {
               animate={{ opacity: 0.5 }}
               exit={{ opacity: 0 }}
             >
-              WEBSITE
+              CASE STUDY
             </motion.span>
           )}
         </AnimatePresence>
@@ -245,11 +275,21 @@ function ActiveCard({ card }: { card: CaseCard }) {
 }
 
 /* ─── Ghost Card ────────────────────────────────────────────────────────── */
-function GhostCard({ card, onClick }: { card: CaseCard; onClick: () => void }) {
+function GhostCard({
+  card,
+  width,
+  height,
+  onClick,
+}: {
+  card: CaseCard;
+  width: number;
+  height: number;
+  onClick: () => void;
+}) {
   return (
     <div
       className="cs-ghost"
-      style={{ width: CARD_W, height: CARD_H }}
+      style={{ width, height }}
       onClick={onClick}
       role="button"
       tabIndex={0}
@@ -270,6 +310,12 @@ export function CaseStudiesSection() {
   const [isDragging, setIsDragging] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [inCarousel, setInCarousel] = useState(false);
+  const [metrics, setMetrics] = useState<CarouselMetrics>({
+    cardW: DESKTOP_CARD_W,
+    cardH: DESKTOP_CARD_H,
+    gap: DESKTOP_GAP,
+  });
+  const [isCoarse, setIsCoarse] = useState(false);
 
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -277,12 +323,32 @@ export function CaseStudiesSection() {
   const xAtDragStart = useRef(0);
   const isDraggingRef = useRef(false);
   const isFirstRender = useRef(true);
+  const activeIndexRef = useRef(0);
+  const metricsRef = useRef(metrics);
+
+  useEffect(() => {
+    activeIndexRef.current = activeIndex;
+  }, [activeIndex]);
+
+  useEffect(() => {
+    metricsRef.current = metrics;
+  }, [metrics]);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(hover: none) and (pointer: coarse)");
+    const apply = () => setIsCoarse(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
 
   const snapToIndex = useCallback(
     (index: number, instant = false) => {
-      if (!containerRef.current) return;
-      const w = containerRef.current.offsetWidth;
-      const targetX = w / 2 - index * (CARD_W + GAP) - CARD_W / 2;
+      const el = containerRef.current;
+      if (!el) return;
+      const { cardW, gap } = metricsRef.current;
+      const w = el.offsetWidth;
+      const targetX = w / 2 - index * (cardW + gap) - cardW / 2;
       if (instant) {
         x.set(targetX);
       } else {
@@ -316,10 +382,19 @@ export function CaseStudiesSection() {
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
-    const ro = new ResizeObserver(() => snapToIndex(activeIndex, true));
+
+    const updateMetrics = () => {
+      const next = getCarouselMetrics(el.offsetWidth);
+      setMetrics(next);
+      metricsRef.current = next;
+      snapToIndex(activeIndexRef.current, true);
+    };
+
+    const ro = new ResizeObserver(updateMetrics);
     ro.observe(el);
+    updateMetrics();
     return () => ro.disconnect();
-  }, [activeIndex, snapToIndex]);
+  }, [snapToIndex]);
 
   /* Wheel navigation */
   useEffect(() => {
@@ -340,6 +415,8 @@ export function CaseStudiesSection() {
 
   /* Pointer drag */
   const onPointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    if ((e.target as HTMLElement).closest("a, button")) return;
     e.currentTarget.setPointerCapture(e.pointerId);
     isDraggingRef.current = true;
     setIsDragging(true);
@@ -360,12 +437,23 @@ export function CaseStudiesSection() {
     if (!isDraggingRef.current) return;
     isDraggingRef.current = false;
     setIsDragging(false);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      /* pointer already released */
+    }
+
+    const { cardW } = metricsRef.current;
     const dx = e.clientX - dragStartX.current;
-    let next = activeIndex;
-    if (dx < -(CARD_W / 5) && activeIndex < CARDS.length - 1) next = activeIndex + 1;
-    else if (dx > CARD_W / 5 && activeIndex > 0) next = activeIndex - 1;
-    if (next !== activeIndex) setActiveIndex(next);
-    else snapToIndex(activeIndex);
+    const threshold = Math.max(40, cardW / 4);
+    const current = activeIndexRef.current;
+    let next = current;
+
+    if (dx < -threshold && current < CARDS.length - 1) next = current + 1;
+    else if (dx > threshold && current > 0) next = current - 1;
+
+    if (next !== current) setActiveIndex(next);
+    else snapToIndex(current);
   };
 
   return (
@@ -402,16 +490,30 @@ export function CaseStudiesSection() {
         onPointerCancel={onPointerUp}
         onMouseEnter={() => setInCarousel(true)}
         onMouseLeave={() => setInCarousel(false)}
-        style={{ cursor: isDragging ? "grabbing" : "grab" }}
+        style={{
+          cursor: isDragging ? "grabbing" : "grab",
+          touchAction: "none",
+          ["--cs-card-w" as string]: `${metrics.cardW}px`,
+          ["--cs-card-h" as string]: `${metrics.cardH}px`,
+          ["--cs-gap" as string]: `${metrics.gap}px`,
+        }}
       >
-        <motion.div className="cs-track" style={{ x }}>
+        <motion.div className="cs-track" style={{ x, gap: metrics.gap }}>
           {CARDS.map((card, i) =>
             i === activeIndex ? (
-              <ActiveCard key={card.id} card={card} />
+              <ActiveCard
+                key={card.id}
+                card={card}
+                width={metrics.cardW}
+                height={metrics.cardH}
+                isCoarse={isCoarse}
+              />
             ) : (
               <GhostCard
                 key={card.id}
                 card={card}
+                width={metrics.cardW}
+                height={metrics.cardH}
                 onClick={() => setActiveIndex(i)}
               />
             )

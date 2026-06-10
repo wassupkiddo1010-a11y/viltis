@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { MEDIA_QUERIES } from "@/lib/breakpoints";
 
 /* ─── Helpers ────────────────────────────────────────────────────────── */
 
@@ -245,7 +246,50 @@ function getCardStyle(i: number, hovered: number | null): React.CSSProperties {
 
 export function IndustryCards({ noAnimation = false }: { noAnimation?: boolean }) {
   const [hovered, setHovered] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const [activeDot, setActiveDot] = useState(0);
+  const deckRef = useRef<HTMLDivElement>(null);
   const reduced = useReducedMotion();
+
+  useEffect(() => {
+    const mq = window.matchMedia(MEDIA_QUERIES.mobile);
+    const apply = () => setIsMobile(mq.matches);
+    apply();
+    mq.addEventListener("change", apply);
+    return () => mq.removeEventListener("change", apply);
+  }, []);
+
+  useEffect(() => {
+    const deck = deckRef.current;
+    if (!isMobile || !deck) return;
+
+    const onScroll = () => {
+      const cards = Array.from(deck.children) as HTMLElement[];
+      const center = deck.scrollLeft + deck.clientWidth / 2;
+      let closest = 0;
+      let minDist = Infinity;
+      cards.forEach((card, i) => {
+        const cardCenter = card.offsetLeft + card.offsetWidth / 2;
+        const dist = Math.abs(center - cardCenter);
+        if (dist < minDist) {
+          minDist = dist;
+          closest = i;
+        }
+      });
+      setActiveDot(closest);
+    };
+
+    deck.addEventListener("scroll", onScroll, { passive: true });
+    onScroll();
+    return () => deck.removeEventListener("scroll", onScroll);
+  }, [isMobile]);
+
+  const scrollToCard = (index: number) => {
+    const deck = deckRef.current;
+    if (!deck) return;
+    const card = deck.children[index] as HTMLElement | undefined;
+    card?.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+  };
 
   // When noAnimation=true (inside HeroScrollScene), the parent controls clip-path.
   const motionProps = (noAnimation || reduced)
@@ -272,15 +316,16 @@ export function IndustryCards({ noAnimation = false }: { noAnimation?: boolean }
         </header>
 
         <div
-          className="industry-showcase__deck"
-          onMouseLeave={() => setHovered(null)}
+          ref={deckRef}
+          className={cn("industry-showcase__deck", isMobile && "industry-showcase__deck--scroll")}
+          onMouseLeave={() => !isMobile && setHovered(null)}
         >
           {CARDS.map((card, i) => (
             <article
               key={card.title}
               className={cn("industry-card-ref", `industry-card-ref--${card.variant}`)}
-              style={getCardStyle(i, hovered)}
-              onMouseEnter={() => setHovered(i)}
+              style={isMobile ? undefined : getCardStyle(i, hovered)}
+              onMouseEnter={isMobile ? undefined : () => setHovered(i)}
             >
               <h3 className="industry-card-ref__title">{card.title}</h3>
               <AnimCanvas drawFn={card.drawFn} />
@@ -289,6 +334,21 @@ export function IndustryCards({ noAnimation = false }: { noAnimation?: boolean }
             </article>
           ))}
         </div>
+
+        {isMobile && (
+          <div className="industry-showcase__dots" aria-hidden={false}>
+            {CARDS.map((card, i) => (
+              <button
+                key={card.title}
+                type="button"
+                className={cn("industry-showcase__dot", i === activeDot && "industry-showcase__dot--active")}
+                aria-label={`View ${card.title}`}
+                aria-current={i === activeDot ? "true" : undefined}
+                onClick={() => scrollToCard(i)}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </motion.section>
   );
