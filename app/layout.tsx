@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import { PerformanceMode } from "@/components/site/performance-mode";
 import { MobileViewRoot } from "@/components/site/mobile-view-root";
+import { ChatbotWidget } from "@/components/site/chatbot-widget";
 import { OrganizationJsonLd } from "@/components/site/json-ld";
 import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/site-config";
 
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <OrganizationJsonLd />
         <PerformanceMode />
         <MobileViewRoot />
+        <ChatbotWidget />
         {children}
       </body>
     </html>

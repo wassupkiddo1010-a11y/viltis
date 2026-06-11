@@ -6,7 +6,8 @@ export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "https://viltis.com";
 export const SITE_EMAIL = "info@viltis.com";
 export const SITE_CAREERS_EMAIL = "careers@viltis.com";
-export const SITE_PHONE = "(619) 324-9355";
+export const SITE_PHONE = "(619) 324-8776";
+export const SITE_PHONE_TEL = `+1${SITE_PHONE.replace(/\D/g, "")}`;
 export const SITE_ADDRESS = "San Diego, CA";
 
 export const SOCIAL_LINKS = {

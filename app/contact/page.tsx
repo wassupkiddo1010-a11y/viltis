@@ -29,7 +29,7 @@ export default function ContactPage() {
                 Reach our team directly at{" "}
                 <a href={`mailto:${SITE_EMAIL}`} className="text-teal-400">{SITE_EMAIL}</a>
                 {" "}or{" "}
-                <a href={`tel:${SITE_PHONE.replace(/\D/g, "")}`} className="text-teal-400">{SITE_PHONE}</a>.
+                <a href={`tel:+1${SITE_PHONE.replace(/\D/g, "")}`} className="text-teal-400">{SITE_PHONE}</a>.
               </p>
               <p className="content-prose__p">Headquarters: {SITE_ADDRESS}</p>
             </div>

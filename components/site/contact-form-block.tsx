@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import Link from "next/link";
+import { SITE_EMAIL, SITE_PHONE, SITE_PHONE_TEL } from "@/lib/site-config";
 
 interface ContactFormBlockProps {
   title?: string;
@@ -30,9 +31,9 @@ export function ContactFormBlock({
           <h2 className="contact-block__title">{title}</h2>
           <p className="contact-block__sub">{subtitle}</p>
           <div className="contact-block__meta">
-            <a href="mailto:info@viltis.com">info@viltis.com</a>
+            <a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a>
             <span aria-hidden="true">·</span>
-            <a href="tel:+16193249355">(619) 324-9355</a>
+            <a href={`tel:${SITE_PHONE_TEL}`}>{SITE_PHONE}</a>
           </div>
           <Link href="/schedule-a-call" className="btn btn--secondary btn--sm contact-block__schedule">
             Schedule a Call
