@@ -1,4 +1,4 @@
-import { SITE_NAME, SITE_URL, SITE_DESCRIPTION, SITE_EMAIL, SITE_ADDRESS } from "@/lib/site-config";
+import { SITE_NAME, SITE_URL, SITE_DESCRIPTION, SITE_EMAIL, SITE_ADDRESS, SOCIAL_LINKS } from "@/lib/site-config";
 
 export function OrganizationJsonLd() {
   const schema = {
@@ -13,7 +13,7 @@ export function OrganizationJsonLd() {
       addressLocality: SITE_ADDRESS,
       addressCountry: "US",
     },
-    sameAs: ["https://www.linkedin.com/company/viltis"],
+    sameAs: [SOCIAL_LINKS.linkedin],
   };
 
   return (

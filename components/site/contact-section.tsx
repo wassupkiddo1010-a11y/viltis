@@ -1,18 +1,12 @@
 "use client";
 
-import { FormEvent, useState } from "react";
 import Link from "next/link";
+import { useForm, ValidationError } from "@formspree/react";
 import { TestimonialsColumns } from "@/components/ui/testimonials-columns-1";
+import { FORMSPREE_CONTACT_FORM_ID } from "@/lib/site-config";
 
 export function ContactSection() {
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSubmitted(true);
-    e.currentTarget.reset();
-    setTimeout(() => setSubmitted(false), 2500);
-  };
+  const [state, handleSubmit] = useForm(FORMSPREE_CONTACT_FORM_ID);
 
   return (
     <section className="cta-section" id="contact">
@@ -32,43 +26,53 @@ export function ContactSection() {
             </a>
           </div>
         </div>
-        <form className="contact-form" onSubmit={handleSubmit}>
-          <h3 className="contact-form__title">Send a message</h3>
-          <div className="contact-form__row">
-            <div className="contact-form__field">
-              <label htmlFor="name">Full Name</label>
-              <input type="text" id="name" name="name" required placeholder="Your name" />
+        {state.succeeded ? (
+          <div className="contact-form contact-form--success">
+            <p className="contact-form__success">Thank you — your message has been sent. We&apos;ll be in touch shortly.</p>
+          </div>
+        ) : (
+          <form className="contact-form" onSubmit={handleSubmit}>
+            <h3 className="contact-form__title">Send a message</h3>
+            <div className="contact-form__row">
+              <div className="contact-form__field">
+                <label htmlFor="name">Full Name</label>
+                <input type="text" id="name" name="name" required placeholder="Your name" />
+                <ValidationError prefix="Name" field="name" errors={state.errors} className="contact-form__error" />
+              </div>
+              <div className="contact-form__field">
+                <label htmlFor="email">Email</label>
+                <input type="email" id="email" name="email" required placeholder="you@company.com" />
+                <ValidationError prefix="Email" field="email" errors={state.errors} className="contact-form__error" />
+              </div>
             </div>
             <div className="contact-form__field">
-              <label htmlFor="email">Email</label>
-              <input type="email" id="email" name="email" required placeholder="you@company.com" />
+              <label htmlFor="company">Company</label>
+              <input type="text" id="company" name="company" placeholder="Organization name" />
             </div>
-          </div>
-          <div className="contact-form__field">
-            <label htmlFor="company">Company</label>
-            <input type="text" id="company" name="company" placeholder="Organization name" />
-          </div>
-          <div className="contact-form__field">
-            <label htmlFor="need">Area of Need</label>
-            <select id="need" name="need" defaultValue="">
-              <option value="">Select a service area</option>
-              <option value="quality">Quality</option>
-              <option value="regulatory">Regulatory</option>
-              <option value="clinical">Clinical</option>
-              <option value="engineering">Engineering</option>
-              <option value="scientific">Scientific</option>
-              <option value="pharmacovigilance">Pharmacovigilance</option>
-              <option value="resourcing">Consultant Resourcing</option>
-            </select>
-          </div>
-          <div className="contact-form__field">
-            <label htmlFor="message">Message</label>
-            <textarea id="message" name="message" rows={4} placeholder="Describe your program needs and timeline" />
-          </div>
-          <button type="submit" className="btn btn--primary contact-form__submit" disabled={submitted}>
-            {submitted ? "Message Sent" : "Submit Inquiry"}
-          </button>
-        </form>
+            <div className="contact-form__field">
+              <label htmlFor="need">Area of Need</label>
+              <select id="need" name="need" defaultValue="">
+                <option value="">Select a service area</option>
+                <option value="quality">Quality</option>
+                <option value="regulatory">Regulatory</option>
+                <option value="clinical">Clinical</option>
+                <option value="engineering">Engineering</option>
+                <option value="scientific">Scientific</option>
+                <option value="pharmacovigilance">Pharmacovigilance</option>
+                <option value="resourcing">Consultant Resourcing</option>
+              </select>
+            </div>
+            <div className="contact-form__field">
+              <label htmlFor="message">Message</label>
+              <textarea id="message" name="message" rows={4} placeholder="Describe your program needs and timeline" />
+              <ValidationError prefix="Message" field="message" errors={state.errors} className="contact-form__error" />
+            </div>
+            <ValidationError errors={state.errors} className="contact-form__error" />
+            <button type="submit" className="btn btn--primary contact-form__submit" disabled={state.submitting}>
+              {state.submitting ? "Sending…" : "Submit Inquiry"}
+            </button>
+          </form>
+        )}
       </div>
     </section>
   );

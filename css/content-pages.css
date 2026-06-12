@@ -562,6 +562,16 @@
   text-decoration: underline;
 }
 
+.contact-block--form-only .contact-block__inner {
+  max-width: 640px;
+}
+
+@media (min-width: 900px) {
+  .contact-block--form-only .contact-block__inner {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Services hub */
 .services-hub__categories {
   display: grid;
