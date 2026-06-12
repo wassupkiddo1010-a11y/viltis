@@ -9,6 +9,39 @@ interface ChatMessage {
 }
 
 const WEBHOOK_URL = process.env.NEXT_PUBLIC_CHATBOT_WEBHOOK_URL ?? "";
+const SESSION_STORAGE_KEY = "viltis-chat-session-id";
+
+function getOrCreateSessionId(): string {
+  if (typeof window === "undefined") return "";
+  let id = sessionStorage.getItem(SESSION_STORAGE_KEY);
+  if (!id) {
+    id = crypto.randomUUID();
+    sessionStorage.setItem(SESSION_STORAGE_KEY, id);
+  }
+  return id;
+}
+
+type WebhookResponse = {
+  reply?: string;
+  message?: string;
+  output?: string;
+  text?: string;
+  response?: string;
+};
+
+function extractReply(data: WebhookResponse | null, ok: boolean): string {
+  const reply =
+    data?.reply ??
+    data?.message ??
+    data?.output ??
+    data?.text ??
+    data?.response;
+
+  if (reply) return reply;
+  return ok
+    ? "Thanks — a Viltis team member will follow up shortly."
+    : "Something went wrong. Please email info@viltis.com and we'll respond promptly.";
+}
 
 export function ChatbotWidget() {
   const [open, setOpen] = useState(false);
@@ -22,6 +55,11 @@ export function ChatbotWidget() {
     },
   ]);
   const listRef = useRef<HTMLDivElement>(null);
+  const sessionIdRef = useRef("");
+
+  useEffect(() => {
+    sessionIdRef.current = getOrCreateSessionId();
+  }, []);
 
   useEffect(() => {
     if (!open || !listRef.current) return;
@@ -56,19 +94,21 @@ export function ChatbotWidget() {
         return;
       }
 
+      const sessionId = sessionIdRef.current || getOrCreateSessionId();
+
       const res = await fetch(WEBHOOK_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, source: "viltis-website" }),
+        body: JSON.stringify({
+          sessionId,
+          chatInput: text,
+          message: text,
+          source: "viltis-website",
+        }),
       });
 
-      const data = (await res.json().catch(() => null)) as { reply?: string; message?: string } | null;
-      const reply =
-        data?.reply ??
-        data?.message ??
-        (res.ok
-          ? "Thanks — a Viltis team member will follow up shortly."
-          : "Something went wrong. Please email info@viltis.com and we'll respond promptly.");
+      const data = (await res.json().catch(() => null)) as WebhookResponse | null;
+      const reply = extractReply(data, res.ok);
 
       setMessages((prev) => [
         ...prev,
