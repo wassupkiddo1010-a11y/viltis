@@ -4,12 +4,12 @@ import { PerformanceMode } from "@/components/site/performance-mode";
 import { MobileViewRoot } from "@/components/site/mobile-view-root";
 import { ChatbotWidget } from "@/components/site/chatbot-widget";
 import { OrganizationJsonLd } from "@/components/site/json-ld";
-import { SITE_NAME, SITE_DESCRIPTION, SITE_URL } from "@/lib/site-config";
+import { SITE_NAME, SITE_DEFAULT_TITLE, SITE_DESCRIPTION, SITE_URL } from "@/lib/site-config";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: SITE_NAME,
+    default: SITE_DEFAULT_TITLE,
     template: `%s | ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,

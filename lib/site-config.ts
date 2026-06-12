@@ -1,4 +1,6 @@
 export const SITE_NAME = "Viltis";
+export const SITE_DEFAULT_TITLE =
+  "Life Science, Biologics, Scientific & Medical Device Consulting - Viltis";
 export const SITE_TAGLINE = "Life Sciences Consulting & Expert Resourcing";
 export const SITE_DESCRIPTION =
   "Viltis provides specialized life sciences consulting and expert resourcing for pharmaceutical, biotech, medical device, and diagnostics companies.";
