@@ -172,14 +172,36 @@ html.mobile-view {
   }
 }
 
-/* ── Testimonials: slower marquee, readable cards ─────────────────────────── */
+/* ── Testimonials: marquee on phones (perf-reduced must not freeze rows) ─── */
 @media (max-width: 768px) {
   html.mobile-view .tm-track {
-    animation-duration: 36s;
+    animation: tmscroll 36s linear infinite;
+    animation-play-state: running !important;
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
   html.mobile-view .tm-card {
-    min-width: min(280px, 78vw);
+    width: min(280px, 78vw);
+    flex-shrink: 0;
+  }
+
+  html.mobile-view .tm-rows-wrap {
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 5%,
+      black 95%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 5%,
+      black 95%,
+      transparent 100%
+    );
   }
 }
 
