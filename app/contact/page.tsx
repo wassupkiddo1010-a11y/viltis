@@ -21,7 +21,10 @@ export default function ContactPage() {
           title="Contact Us"
           subtitle="Where does your business need more support? We offer a broad range of solutions customized to your needs."
         />
-        <ContactFormBlock formOnly />
+        <ContactFormBlock
+          title="Send us a message"
+          subtitle="Tell us about your program, timeline, and area of need. We'll respond promptly."
+        />
       </main>
       <Footer />
     </>

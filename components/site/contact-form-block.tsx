@@ -13,38 +13,30 @@ interface ContactFormBlockProps {
   title?: string;
   subtitle?: string;
   compact?: boolean;
-  /** Contact page: hero + form only, no sidebar copy or contact meta */
-  formOnly?: boolean;
 }
 
 export function ContactFormBlock({
   title = "How can we help?",
   subtitle = "Tell us about your program needs and timeline. Our team will respond promptly.",
   compact = false,
-  formOnly = false,
 }: ContactFormBlockProps) {
   const [state, handleSubmit] = useForm(FORMSPREE_CONTACT_FORM_ID);
 
   return (
-    <section
-      className={`contact-block${compact ? " contact-block--compact" : ""}${formOnly ? " contact-block--form-only" : ""}`}
-      id="contact-form"
-    >
+    <section className={`contact-block${compact ? " contact-block--compact" : ""}`} id="contact-form">
       <div className="contact-block__inner">
-        {!formOnly && (
-          <div className="contact-block__copy">
-            <h2 className="contact-block__title">{title}</h2>
-            <p className="contact-block__sub">{subtitle}</p>
-            <div className="contact-block__meta">
-              <a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a>
-              <span aria-hidden="true">·</span>
-              <a href={`tel:${SITE_PHONE_TEL}`}>{SITE_PHONE}</a>
-            </div>
-            <Link href="/schedule-a-call" className="btn btn--secondary btn--sm contact-block__schedule">
-              Schedule a Call
-            </Link>
+        <div className="contact-block__copy">
+          <h2 className="contact-block__title">{title}</h2>
+          <p className="contact-block__sub">{subtitle}</p>
+          <div className="contact-block__meta">
+            <a href={`mailto:${SITE_EMAIL}`}>{SITE_EMAIL}</a>
+            <span aria-hidden="true">·</span>
+            <a href={`tel:${SITE_PHONE_TEL}`}>{SITE_PHONE}</a>
           </div>
-        )}
+          <Link href="/schedule-a-call" className="btn btn--secondary btn--sm contact-block__schedule">
+            Schedule a Call
+          </Link>
+        </div>
         {state.succeeded ? (
           <div className="contact-form contact-block__form contact-form--success">
             <p className="contact-form__success">Thank you — your message has been sent. We&apos;ll be in touch shortly.</p>
