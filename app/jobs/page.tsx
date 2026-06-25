@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/site/navbar";
 import { Footer } from "@/components/site/footer";
 import { JobBoard } from "@/components/site/job-board";
-import { supabase, type JobRow } from "@/lib/supabase";
+import { getJobsForListing } from "@/lib/jobs";
 
 import { pageMetadata } from "@/lib/seo";
 
@@ -11,27 +11,11 @@ export const metadata = pageMetadata({
   path: "/jobs",
 });
 
-// ISR: cached for 5 minutes, matches the cron sync interval.
-// The cron also calls revalidatePath("/jobs") so updates appear immediately after a sync.
-export const revalidate = 300;
-
-async function getJobs(): Promise<Omit<JobRow, "description">[]> {
-  // Exclude `description` — it's large HTML not needed on the listing page.
-  const { data, error } = await supabase
-    .from("jobs")
-    .select("id,title,employment_type,on_site,location,salary,pay_rate,salary_unit,num_openings,category,date_added,synced_at")
-    .order("date_added", { ascending: false });
-
-  if (error) {
-    console.error("[/jobs] Supabase error:", error.message);
-    return [];
-  }
-
-  return data ?? [];
-}
+// ISR: daily cache; cron revalidatePath runs after each sync for fresh listings.
+export const revalidate = 86_400;
 
 export default async function JobsPage() {
-  const jobs = await getJobs();
+  const jobs = await getJobsForListing();
 
   return (
     <>
@@ -51,7 +35,7 @@ export default async function JobsPage() {
         <section className="jobs-board-section">
           <div className="jobs-board-section__inner">
             {jobs.length > 0 ? (
-              <JobBoard jobs={jobs as JobRow[]} />
+              <JobBoard jobs={jobs} />
             ) : (
               <div className="jobs-empty">
                 <p className="jobs-empty__icon">🔬</p>

@@ -4,22 +4,77 @@
  * Syncs open Bullhorn jobs → Supabase (dedupe, format descriptions, remove closed).
  * Visitors always read from Supabase — no Bullhorn latency on page loads.
  *
- * Triggers (pick one or both):
- *  1. Vercel Cron — Hobby plan: once daily at 09:00 UTC (see vercel.json).
- *     Pro plan: change schedule to every 5 minutes (cron: star-slash-5 * * * *).
- *  2. n8n (or any scheduler) — GET this URL every 5–15 min with:
- *       Authorization: Bearer <CRON_SECRET>
+ * Trigger: Vercel Cron once daily at 09:00 UTC (see vercel.json).
+ * Requires Authorization: Bearer <CRON_SECRET> when CRON_SECRET is set.
  *
- * Set CRON_SECRET in Vercel env vars. Vercel Cron sends the same header automatically.
+ * Avoid external schedulers (e.g. n8n every 5–15 min) — each run is a heavy
+ * serverless invocation and revalidates job pages.
  */
 
 import { NextRequest, NextResponse } from "next/server";
 import { fetchOpenJobs, formatDescription, formatLocation } from "@/lib/bullhorn";
+import { buildJobSlugFields } from "@/lib/job-slugs";
 import { supabase, type JobRow } from "@/lib/supabase";
 import { revalidatePath } from "next/cache";
 
+interface ExistingJobSnapshot {
+  id: number;
+  category_slug: string | null;
+  job_slug: string | null;
+  title: string | null;
+  category: string | null;
+}
+
+function collectRevalidationPaths(
+  previous: ExistingJobSnapshot[],
+  rows: Array<Pick<JobRow, "id" | "category_slug" | "job_slug" | "title" | "category">>,
+): string[] {
+  const paths = new Set<string>(["/jobs"]);
+  const previousById = new Map(previous.map((job) => [job.id, job]));
+  const nextIds = new Set(rows.map((row) => row.id));
+
+  for (const row of rows) {
+    const prev = previousById.get(row.id);
+    const nextPath =
+      row.category_slug && row.job_slug ? `/jobs/${row.category_slug}/${row.job_slug}` : null;
+
+    if (!prev) {
+      if (row.category_slug) paths.add(`/jobs/${row.category_slug}`);
+      if (nextPath) paths.add(nextPath);
+      continue;
+    }
+
+    const prevPath =
+      prev.category_slug && prev.job_slug
+        ? `/jobs/${prev.category_slug}/${prev.job_slug}`
+        : null;
+
+    const changed =
+      prev.category_slug !== row.category_slug ||
+      prev.job_slug !== row.job_slug ||
+      prev.title !== row.title ||
+      prev.category !== row.category;
+
+    if (changed) {
+      if (prev.category_slug) paths.add(`/jobs/${prev.category_slug}`);
+      if (row.category_slug) paths.add(`/jobs/${row.category_slug}`);
+      if (prevPath) paths.add(prevPath);
+      if (nextPath) paths.add(nextPath);
+    }
+  }
+
+  for (const prev of previous) {
+    if (nextIds.has(prev.id)) continue;
+    if (prev.category_slug) paths.add(`/jobs/${prev.category_slug}`);
+    if (prev.category_slug && prev.job_slug) {
+      paths.add(`/jobs/${prev.category_slug}/${prev.job_slug}`);
+    }
+  }
+
+  return [...paths];
+}
+
 export async function GET(req: NextRequest) {
-  // Verify the request is coming from Vercel Cron (or a manual trigger with the secret)
   const cronSecret = process.env.CRON_SECRET;
   if (cronSecret) {
     const auth = req.headers.get("authorization");
@@ -31,11 +86,19 @@ export async function GET(req: NextRequest) {
   const startMs = Date.now();
 
   try {
-    // 1. Fetch all open jobs from Bullhorn (uses in-process session cache)
+    const { data: existingJobs, error: existingError } = await supabase
+      .from("jobs")
+      .select("id, category_slug, job_slug, title, category");
+
+    if (existingError) {
+      console.warn("[sync-jobs] Could not read existing jobs for revalidation:", existingError.message);
+    }
+
+    const previous = (existingJobs ?? []) as ExistingJobSnapshot[];
+
     const { jobs, total: bullhornTotal } = await fetchOpenJobs();
 
-    // 2. Build Supabase rows — descriptions pre-formatted here once, not on every render
-    const rows: Omit<JobRow, "synced_at">[] = jobs.map((job) => ({
+    const baseRows = jobs.map((job) => ({
       id: job.id,
       title: job.title,
       description: formatDescription(job.publicDescription || job.description),
@@ -50,26 +113,49 @@ export async function GET(req: NextRequest) {
       date_added: job.dateAdded ?? null,
     }));
 
-    // 3. Upsert all rows (insert new, update changed — keyed on `id`)
-    const { error: upsertError } = await supabase
-      .from("jobs")
-      .upsert(rows, { onConflict: "id" });
+    const slugMap = buildJobSlugFields(baseRows);
+    const rowsWithSlugs: Omit<JobRow, "synced_at">[] = baseRows.map((row) => {
+      const slugs = slugMap.get(row.id)!;
+      return {
+        ...row,
+        category_slug: slugs.category_slug,
+        job_slug: slugs.job_slug,
+      };
+    });
+
+    let rows: Omit<JobRow, "synced_at">[] = rowsWithSlugs;
+    let { error: upsertError } = await supabase.from("jobs").upsert(rows, { onConflict: "id" });
+
+    if (upsertError?.message?.includes("category_slug") || upsertError?.message?.includes("job_slug")) {
+      console.warn("[sync-jobs] Slug columns missing — upserting without slugs. Run supabase/jobs-slugs.sql.");
+      rows = baseRows.map((row) => ({
+        ...row,
+        category_slug: null,
+        job_slug: null,
+      }));
+      ({ error: upsertError } = await supabase.from("jobs").upsert(baseRows, { onConflict: "id" }));
+    }
 
     if (upsertError) throw new Error(`Supabase upsert failed: ${upsertError.message}`);
 
-    // 4. Remove jobs that are no longer open in Bullhorn
     const activeIds = rows.map((r) => r.id);
-    const { error: deleteError } = await supabase
-      .from("jobs")
-      .delete()
-      .not("id", "in", `(${activeIds.join(",")})`);
+    if (activeIds.length > 0) {
+      const { error: deleteError } = await supabase
+        .from("jobs")
+        .delete()
+        .not("id", "in", `(${activeIds.join(",")})`);
 
-    if (deleteError) throw new Error(`Supabase delete failed: ${deleteError.message}`);
+      if (deleteError) throw new Error(`Supabase delete failed: ${deleteError.message}`);
+    } else {
+      const { error: deleteError } = await supabase.from("jobs").delete().neq("id", 0);
+      if (deleteError) throw new Error(`Supabase delete failed: ${deleteError.message}`);
+    }
 
-    // 5. Revalidate the jobs pages so Next.js serves fresh data immediately after sync
-    revalidatePath("/jobs");
-    revalidatePath("/jobs/[id]", "page");
-    revalidatePath("/api/jobs");
+    const pathsToRevalidate = collectRevalidationPaths(previous, rows);
+    for (const path of pathsToRevalidate) {
+      revalidatePath(path);
+    }
+    revalidatePath("/sitemap.xml");
 
     const elapsed = Date.now() - startMs;
 
@@ -77,13 +163,14 @@ export async function GET(req: NextRequest) {
       ok: true,
       synced: rows.length,
       bullhornTotal,
+      revalidatedPaths: pathsToRevalidate.length,
       elapsedMs: elapsed,
     });
   } catch (err) {
     console.error("[sync-jobs] Error:", err);
     return NextResponse.json(
       { ok: false, error: (err as Error).message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

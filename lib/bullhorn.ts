@@ -500,5 +500,242 @@ export async function fetchJobById(id: number): Promise<BullhornJob | null> {
   }
 }
 
+// ─── Candidate / application writes ─────────────────────────────────────────
+
+export interface JobApplicationInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+  jobOrderId: number;
+  /** Used for the candidate list "Title" column in Bullhorn (`occupation`). */
+  jobTitle?: string;
+  source?: string;
+}
+
+export interface JobApplicationResult {
+  candidateId: number;
+  submissionId: number;
+  candidateCreated: boolean;
+  submissionCreated: boolean;
+}
+
+interface BullhornWriteResponse {
+  changedEntityId?: number;
+  changeType?: string;
+  errorMessage?: string;
+}
+
+function fullName(firstName: string, lastName: string): string {
+  return `${firstName.trim()} ${lastName.trim()}`.replace(/\s+/g, " ").trim();
+}
+
+async function bullhornPut<T extends Record<string, unknown>>(
+  restUrl: string,
+  bhToken: string,
+  path: string,
+  body: T
+): Promise<BullhornWriteResponse> {
+  const res = await fetch(`${restUrl}${path}?BhRestToken=${encodeURIComponent(bhToken)}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = (await res.json()) as BullhornWriteResponse & { errorMessage?: string };
+  if (!res.ok) {
+    throw new Error(data.errorMessage ?? `Bullhorn PUT ${path} failed (${res.status})`);
+  }
+  return data;
+}
+
+async function bullhornPost<T extends Record<string, unknown>>(
+  restUrl: string,
+  bhToken: string,
+  path: string,
+  body: T
+): Promise<BullhornWriteResponse> {
+  const res = await fetch(`${restUrl}${path}?BhRestToken=${encodeURIComponent(bhToken)}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+  });
+  const data = (await res.json()) as BullhornWriteResponse & { errorMessage?: string };
+  if (!res.ok) {
+    throw new Error(data.errorMessage ?? `Bullhorn POST ${path} failed (${res.status})`);
+  }
+  return data;
+}
+
+async function searchCandidatesByEmail(
+  restUrl: string,
+  bhToken: string,
+  email: string
+): Promise<{ id: number }[]> {
+  const query = encodeURIComponent(`email:"${email.trim()}"`);
+  const res = await fetch(
+    `${restUrl}search/Candidate?BhRestToken=${encodeURIComponent(bhToken)}&query=${query}&fields=id&count=10&sort=-dateAdded`
+  );
+  const data = await res.json();
+  return (data.data ?? []) as { id: number }[];
+}
+
+async function findExistingSubmission(
+  restUrl: string,
+  bhToken: string,
+  candidateId: number,
+  jobOrderId: number
+): Promise<number | null> {
+  const where = encodeURIComponent(`candidate.id=${candidateId} AND jobOrder.id=${jobOrderId}`);
+  const res = await fetch(
+    `${restUrl}query/JobSubmission?BhRestToken=${encodeURIComponent(bhToken)}&where=${where}&fields=id&count=1`
+  );
+  const data = await res.json();
+  const row = data.data?.[0] as { id: number } | undefined;
+  return row?.id ?? null;
+}
+
+/**
+ * Creates or updates a Candidate and links them to a JobOrder via JobSubmission.
+ *
+ * Bullhorn list views use:
+ *  - `name` (not just firstName/lastName) for the Name column
+ *  - `occupation` for the Title column
+ */
+export async function submitJobApplication(
+  input: JobApplicationInput
+): Promise<JobApplicationResult> {
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    jobOrderId,
+    source = "Viltis Website",
+  } = input;
+
+  const { restUrl, bhToken } = await getSession();
+
+  let jobTitle = input.jobTitle?.trim();
+  if (!jobTitle) {
+    const job = await fetchJobById(jobOrderId);
+    jobTitle = job?.title ?? "";
+  }
+
+  const displayName = fullName(firstName, lastName);
+  const candidatePayload = {
+    firstName: firstName.trim(),
+    lastName: lastName.trim(),
+    name: displayName,
+    email: email.trim(),
+    phone: phone?.trim() || undefined,
+    status: "New Lead",
+    source,
+    occupation: jobTitle,
+  };
+
+  const existing = await searchCandidatesByEmail(restUrl, bhToken, email);
+  let candidateId: number | undefined = existing[0]?.id;
+  let candidateCreated = false;
+
+  if (candidateId) {
+    await bullhornPost(restUrl, bhToken, `entity/Candidate/${candidateId}`, candidatePayload);
+  } else {
+    const created = await bullhornPut(restUrl, bhToken, "entity/Candidate", candidatePayload);
+    candidateCreated = created.changeType === "INSERT";
+    candidateId = created.changedEntityId;
+    if (!candidateId) {
+      throw new Error("Bullhorn did not return a candidate ID.");
+    }
+  }
+
+  const existingSubmissionId = await findExistingSubmission(restUrl, bhToken, candidateId, jobOrderId);
+  if (existingSubmissionId) {
+    return {
+      candidateId,
+      submissionId: existingSubmissionId,
+      candidateCreated,
+      submissionCreated: false,
+    };
+  }
+
+  const submission = await bullhornPut(restUrl, bhToken, "entity/JobSubmission", {
+    candidate: { id: candidateId },
+    jobOrder: { id: jobOrderId },
+    status: "New Lead",
+    source,
+  });
+
+  const submissionId = submission.changedEntityId;
+  if (!submissionId) {
+    throw new Error("Bullhorn did not return a job submission ID.");
+  }
+
+  return {
+    candidateId,
+    submissionId,
+    candidateCreated,
+    submissionCreated: submission.changeType === "INSERT",
+  };
+}
+
+const RESUME_MAX_BYTES = 5 * 1024 * 1024;
+const RESUME_ALLOWED_TYPES = new Set([
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+]);
+
+export function validateResumeFile(file: { size: number; type: string; name: string }): string | null {
+  if (file.size > RESUME_MAX_BYTES) {
+    return "Resume must be 5 MB or smaller.";
+  }
+  const ext = file.name.split(".").pop()?.toLowerCase();
+  const allowedExt = new Set(["pdf", "doc", "docx"]);
+  if (!RESUME_ALLOWED_TYPES.has(file.type) && (!ext || !allowedExt.has(ext))) {
+    return "Resume must be a PDF, DOC, or DOCX file.";
+  }
+  return null;
+}
+
+function resumeContentType(filename: string, reportedType: string): string {
+  if (RESUME_ALLOWED_TYPES.has(reportedType)) return reportedType;
+  const ext = filename.split(".").pop()?.toLowerCase();
+  if (ext === "pdf") return "application/pdf";
+  if (ext === "doc") return "application/msword";
+  if (ext === "docx") return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+  return reportedType || "application/octet-stream";
+}
+
+/** Attach a resume file to an existing Bullhorn Candidate (Files / Portfolio). */
+export async function attachResumeToCandidate(
+  candidateId: number,
+  file: { buffer: Buffer; filename: string; contentType: string }
+): Promise<number | null> {
+  const { restUrl, bhToken } = await getSession();
+  const contentType = resumeContentType(file.filename, file.contentType);
+
+  const res = await fetch(
+    `${restUrl}file/Candidate/${candidateId}?BhRestToken=${encodeURIComponent(bhToken)}`,
+    {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        externalID: "Portfolio",
+        fileType: "SAMPLE",
+        name: file.filename,
+        contentType,
+        description: "Resume submitted via Viltis website",
+        fileContent: file.buffer.toString("base64"),
+      }),
+    }
+  );
+
+  const data = (await res.json()) as { fileId?: number; errorMessage?: string };
+  if (!res.ok) {
+    throw new Error(data.errorMessage ?? `Resume upload failed (${res.status})`);
+  }
+  return data.fileId ?? null;
+}
+
 // Re-export for consumers that previously imported from this file
 export { getSession as getBullhornSession };

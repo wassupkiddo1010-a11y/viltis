@@ -1,46 +1,59 @@
 "use client";
 
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState, type ReactNode } from "react";
+
+interface ChatAction {
+  label: string;
+  url: string;
+}
 
 interface ChatMessage {
   id: string;
   role: "user" | "assistant";
   text: string;
+  actions?: ChatAction[];
 }
 
-const WEBHOOK_URL = process.env.NEXT_PUBLIC_CHATBOT_WEBHOOK_URL ?? "";
-const SESSION_STORAGE_KEY = "viltis-chat-session-id";
+const MAX_HISTORY = 20;
 
-function getOrCreateSessionId(): string {
-  if (typeof window === "undefined") return "";
-  let id = sessionStorage.getItem(SESSION_STORAGE_KEY);
-  if (!id) {
-    id = crypto.randomUUID();
-    sessionStorage.setItem(SESSION_STORAGE_KEY, id);
+const FALLBACK_REPLY =
+  "Sorry — I'm having trouble right now. For consulting or resourcing, email info@viltis.com or visit our contact page.";
+
+const FALLBACK_ACTIONS: ChatAction[] = [
+  { label: "Contact", url: "https://viltis.com/contact" },
+  { label: "Schedule a Call", url: "https://viltis.com/schedule-a-call" },
+];
+
+function renderMarkdownLinks(text: string): ReactNode[] {
+  const parts: React.ReactNode[] = [];
+  const linkRe = /\[([^\]]+)\]\((https:\/\/viltis\.com[^)]+)\)/g;
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+
+  while ((match = linkRe.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push(text.slice(lastIndex, match.index));
+    }
+    parts.push(
+      <a
+        key={`link-${key++}`}
+        href={match[2]}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="chatbot__link"
+      >
+        {match[1]}
+      </a>,
+    );
+    lastIndex = match.index + match[0].length;
   }
-  return id;
-}
 
-type WebhookResponse = {
-  reply?: string;
-  message?: string;
-  output?: string;
-  text?: string;
-  response?: string;
-};
+  if (lastIndex < text.length) {
+    parts.push(text.slice(lastIndex));
+  }
 
-function extractReply(data: WebhookResponse | null, ok: boolean): string {
-  const reply =
-    data?.reply ??
-    data?.message ??
-    data?.output ??
-    data?.text ??
-    data?.response;
-
-  if (reply) return reply;
-  return ok
-    ? "Thanks — a Viltis team member will follow up shortly."
-    : "Something went wrong. Please email info@viltis.com and we'll respond promptly.";
+  return parts.length > 0 ? parts : [text];
 }
 
 export function ChatbotWidget() {
@@ -58,13 +71,13 @@ export function ChatbotWidget() {
   const sessionIdRef = useRef("");
 
   useEffect(() => {
-    sessionIdRef.current = getOrCreateSessionId();
+    sessionIdRef.current = crypto.randomUUID();
   }, []);
 
   useEffect(() => {
     if (!open || !listRef.current) return;
     listRef.current.scrollTop = listRef.current.scrollHeight;
-  }, [open, messages]);
+  }, [open, messages, sending]);
 
   const sendMessage = async (e: FormEvent) => {
     e.preventDefault();
@@ -77,42 +90,40 @@ export function ChatbotWidget() {
       text,
     };
 
+    const historyForApi = [...messages.filter((m) => m.id !== "welcome"), userMsg]
+      .slice(-MAX_HISTORY)
+      .map((m) => ({ role: m.role, content: m.text }));
+
     setMessages((prev) => [...prev, userMsg]);
     setInput("");
     setSending(true);
 
     try {
-      if (!WEBHOOK_URL) {
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `a-${Date.now()}`,
-            role: "assistant",
-            text: "Thanks for your message. Live chat routing is being connected — for immediate help, email info@viltis.com or schedule a consultation on our site.",
-          },
-        ]);
-        return;
-      }
-
-      const sessionId = sessionIdRef.current || getOrCreateSessionId();
-
-      const res = await fetch(WEBHOOK_URL, {
+      const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sessionId,
-          chatInput: text,
-          message: text,
-          source: "viltis-website",
+          sessionId: sessionIdRef.current,
+          messages: historyForApi,
         }),
       });
 
-      const data = (await res.json().catch(() => null)) as WebhookResponse | null;
-      const reply = extractReply(data, res.ok);
+      const data = (await res.json().catch(() => null)) as {
+        reply?: string;
+        actions?: ChatAction[];
+      } | null;
+
+      const reply = data?.reply?.trim() || FALLBACK_REPLY;
+      const actions =
+        Array.isArray(data?.actions) && data.actions.length > 0
+          ? data.actions
+          : !res.ok
+            ? FALLBACK_ACTIONS
+            : undefined;
 
       setMessages((prev) => [
         ...prev,
-        { id: `a-${Date.now()}`, role: "assistant", text: reply },
+        { id: `a-${Date.now()}`, role: "assistant", text: reply, actions },
       ]);
     } catch {
       setMessages((prev) => [
@@ -120,7 +131,8 @@ export function ChatbotWidget() {
         {
           id: `a-${Date.now()}`,
           role: "assistant",
-          text: "Unable to reach the assistant right now. Please email info@viltis.com or use our contact form.",
+          text: FALLBACK_REPLY,
+          actions: FALLBACK_ACTIONS,
         },
       ]);
     } finally {
@@ -156,9 +168,26 @@ export function ChatbotWidget() {
             {messages.map((msg) => (
               <div
                 key={msg.id}
-                className={`chatbot__bubble chatbot__bubble--${msg.role}`}
+                className={`chatbot__message-group${msg.role === "user" ? " chatbot__message-group--user" : ""}`}
               >
-                {msg.text}
+                <div className={`chatbot__bubble chatbot__bubble--${msg.role}`}>
+                  {renderMarkdownLinks(msg.text)}
+                </div>
+                {msg.actions && msg.actions.length > 0 && (
+                  <div className="chatbot__actions">
+                    {msg.actions.map((action) => (
+                      <a
+                        key={`${msg.id}-${action.url}`}
+                        href={action.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="chatbot__action-btn"
+                      >
+                        {action.label}
+                      </a>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
             {sending && (

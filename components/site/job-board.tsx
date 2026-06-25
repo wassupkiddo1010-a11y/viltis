@@ -2,7 +2,8 @@
 
 import { useState, useMemo, useEffect, useCallback } from "react";
 import Link from "next/link";
-import type { JobRow } from "@/lib/supabase";
+import type { JobRecord } from "@/lib/jobs";
+import { getJobHref } from "@/lib/job-slugs";
 import { usePagination } from "@/components/hooks/use-pagination";
 import {
   Pagination,
@@ -39,7 +40,7 @@ const ON_SITE_LABEL: Record<string, string> = {
 };
 
 interface Props {
-  jobs: JobRow[];
+  jobs: JobRecord[];
 }
 
 export function JobBoard({ jobs }: Props) {
@@ -181,7 +182,7 @@ export function JobBoard({ jobs }: Props) {
               return (
                 <li key={job.id}>
                   <Link
-                    href={`/jobs/${job.id}`}
+                    href={getJobHref(job)}
                     className="job-card job-card--link"
                     onClick={saveScroll}
                     aria-label={`View job: ${job.title}`}

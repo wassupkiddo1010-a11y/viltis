@@ -3,9 +3,12 @@ import { SITE_URL } from "@/lib/site-config";
 import { SERVICE_CATEGORIES } from "@/lib/content/services-catalog";
 import { CASE_STUDIES } from "@/lib/content/case-studies-catalog";
 import { BLOG_POSTS } from "@/lib/content/blog-catalog";
+import { getJobsForListing } from "@/lib/jobs";
+import { getJobHref } from "@/lib/job-slugs";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
+  const jobs = await getJobsForListing();
   const staticPages: MetadataRoute.Sitemap = [
     { url: SITE_URL, lastModified: now, changeFrequency: "weekly", priority: 1 },
     { url: `${SITE_URL}/work-with-us`, lastModified: now, changeFrequency: "monthly", priority: 0.9 },
@@ -48,5 +51,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.55,
   }));
 
-  return [...staticPages, ...categoryPages, ...servicePages, ...caseStudyPages, ...blogPages];
+  const jobPages = jobs.map((job) => ({
+    url: `${SITE_URL}${getJobHref(job)}`,
+    lastModified: job.synced_at ? new Date(job.synced_at) : now,
+    changeFrequency: "weekly" as const,
+    priority: 0.65,
+  }));
+
+  return [...staticPages, ...categoryPages, ...servicePages, ...caseStudyPages, ...blogPages, ...jobPages];
 }

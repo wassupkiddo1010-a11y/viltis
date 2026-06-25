@@ -47,6 +47,8 @@ export interface JobRow {
   salary_unit: string | null;
   num_openings: number | null;
   category: string | null;
+  category_slug: string | null;
+  job_slug: string | null;
   date_added: number | null;
   synced_at: string;
 }
